@@ -30,35 +30,16 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
-
-    public Member addOrUpdateKeys(Long id, Map<String, String> keys) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
-
-        // 새로운 키가 제공된 경우, insert 또는 update 처리
-        if (keys.containsKey("accessKey") && member.getAccess_key() == null) {
-            member.setAccess_key(keys.get("accessKey")); // insert
-        } else if (keys.containsKey("accessKey")) {
-            member.setAccess_key(keys.get("accessKey")); // update
-        }
-
-        if (keys.containsKey("secretKey") && member.getSecret_key() == null) {
-            member.setSecret_key(keys.get("secretKey")); // insert
-        } else if (keys.containsKey("secretKey")) {
-            member.setSecret_key(keys.get("secretKey")); // update
-        }
-
-        return memberRepository.save(member);
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
-    // Access Key와 Secret Key 삭제
-    public Member removeKeys(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+    public Member updateCredentials(String email, String accessKey, String secretKey) {
+        Member member = getMemberByEmail(email);
+        member.setAccess_key(accessKey);
+        member.setSecret_key(secretKey);
 
-        member.setAccess_key(null);
-        member.setSecret_key(null);
-
+        s3Service.createTfvarsFile(email,accessKey,secretKey);
         return memberRepository.save(member);
     }
 }

@@ -30,18 +30,13 @@ public class MemberController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Access Key와 Secret Key 추가 또는 수정
-    @PutMapping("/{id}/keys")
-    public ResponseEntity<Member> addOrUpdateKeys(@PathVariable Long id,
-                                                  @RequestBody Map<String, String> keys) {
-        Member updatedMember = memberService.addOrUpdateKeys(id, keys);
-        return ResponseEntity.ok(updatedMember);
+
+    @PostMapping("/update-credentials")
+    public ResponseEntity<String> updateCredentials(@RequestBody Member member) {
+        memberService.updateCredentials(member.getEmail(), member.getAccess_key(),member.getSecret_key());
+        return ResponseEntity.ok("자격 증명이 업데이트되었습니다.");
     }
 
-    // Access Key와 Secret Key 삭제
-    @DeleteMapping("/{id}/keys/delete")
-    public ResponseEntity<Member> removeKeys(@PathVariable Long id) {
-        Member updatedMember = memberService.removeKeys(id);
-        return ResponseEntity.ok(updatedMember);
-    }
+
+
 }
