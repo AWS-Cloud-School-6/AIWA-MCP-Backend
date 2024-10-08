@@ -2,6 +2,7 @@ package AIWA.McpBackend.service.member;
 
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.repository.member.MemberRepository;
+import AIWA.McpBackend.service.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +13,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
     public Member registerMember(Member member) {
         if (memberRepository.findByEmail(member.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
+        s3Service.createUserDirectory(member.getEmail());
         return memberRepository.save(member);
     }
 
