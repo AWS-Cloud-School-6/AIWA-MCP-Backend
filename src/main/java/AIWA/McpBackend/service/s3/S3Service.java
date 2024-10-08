@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class S3Service {
 
     private final AmazonS3 s3Client;
-    private final String bucketName = "your-s3-bucket-name";
+    private final String bucketName = "aiwa-terraform";
 
     public void createUserDirectory(String userId) {
         String userPrefix = "users/" + userId + "/";
