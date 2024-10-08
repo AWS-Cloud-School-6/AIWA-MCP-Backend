@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: software.amazon.awssdk:endpoints-spi:2.20.76">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/endpoints-spi/2.20.76/4b753547bae1a5bfc890c13c065c39d8c14c2757/endpoints-spi-2.20.76.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/endpoints-spi/2.20.76/feb2afaf5a1e28ded72c038a97bb50f22cafd052/endpoints-spi-2.20.76-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
