@@ -25,6 +25,10 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
 
     public Member addOrUpdateKeys(Long id, Map<String, String> keys) {
         Member member = memberRepository.findById(id)

@@ -6,6 +6,7 @@ import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -24,9 +25,10 @@ public class AwsResourceController {
         this.awsResourceFetcher = awsResourceFetcher;
     }
 
-    @GetMapping("/api/aws/resources")
-    public Map<String, Object> getAwsResources() {
+    @GetMapping("/api/aws/resources/{email}")
+    public Map<String, Object> getAwsResources(@PathVariable String email) {
         Map<String, Object> resources = new HashMap<>();
+        awsResourceFetcher.initializeClient(email);
 
         // EC2 Instances
         List<Ec2InstanceDTO> ec2Instances = new ArrayList<>();
