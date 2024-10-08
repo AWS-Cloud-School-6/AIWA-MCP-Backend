@@ -19,8 +19,6 @@ public class S3Service {
 
     public void createUserDirectory(String userId) {
         String userPrefix = "users/" + userId + "/";
-        // 사용자 디렉토리를 생성합니다 (필요한 경우)
-        s3Client.putObject(bucketName, userPrefix, "");
         // 초기 main.tf 및 terraform.tfstate 파일을 업로드합니다
         uploadInitialFiles(userPrefix);
     }

@@ -2,6 +2,7 @@ package AIWA.McpBackend.service.member;
 
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.repository.member.MemberRepository;
+import AIWA.McpBackend.service.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +14,13 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
+    private final S3Service s3Service;
+
     public Member registerMember(Member member) {
         if (memberRepository.findByEmail(member.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
+        s3Service.createUserDirectory(member.getEmail());
         return memberRepository.save(member);
     }
 
@@ -30,23 +34,11 @@ public class MemberService {
     }
 
 
-    public Member addOrUpdateKeys(Long id, Map<String, String> keys) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
-
-        // 새로운 키가 제공된 경우, insert 또는 update 처리
-        if (keys.containsKey("accessKey") && member.getAccess_key() == null) {
-            member.setAccess_key(keys.get("accessKey")); // insert
-        } else if (keys.containsKey("accessKey")) {
-            member.setAccess_key(keys.get("accessKey")); // update
-        }
-
-        if (keys.containsKey("secretKey") && member.getSecret_key() == null) {
-            member.setSecret_key(keys.get("secretKey")); // insert
-        } else if (keys.containsKey("secretKey")) {
-            member.setSecret_key(keys.get("secretKey")); // update
-        }
-
+    public Member addOrUpdateKeys(String email,String access_key,String secret_key) {
+        Member member = getMemberByEmail(email);
+        member.setAccess_key(access_key);
+        member.setSecret_key(secret_key);
+        s3Service.createTfvarsFile(email,access_key,secret_key);
         return memberRepository.save(member);
     }
 
