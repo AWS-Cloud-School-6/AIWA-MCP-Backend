@@ -1,5 +1,5 @@
 // SubnetDTO.java
-package AIWA.McpBackend;
+package AIWA.McpBackend.provider.aws.api.dto.subnet;
 
 import lombok.Getter;
 

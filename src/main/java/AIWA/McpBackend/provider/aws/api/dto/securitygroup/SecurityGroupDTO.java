@@ -1,5 +1,5 @@
 // SecurityGroupDTO.java
-package AIWA.McpBackend;
+package AIWA.McpBackend.provider.aws.api.dto.securitygroup;
 
 import lombok.Getter;
 

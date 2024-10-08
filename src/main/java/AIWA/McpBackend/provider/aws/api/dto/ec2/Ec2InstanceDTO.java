@@ -1,5 +1,5 @@
 // EC2InstanceDTO.java
-package AIWA.McpBackend;
+package AIWA.McpBackend.provider.aws.api.dto.ec2;
 
 import lombok.Getter;
 

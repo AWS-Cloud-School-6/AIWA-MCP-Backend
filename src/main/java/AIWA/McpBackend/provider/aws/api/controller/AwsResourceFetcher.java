@@ -1,4 +1,4 @@
-package AIWA.McpBackend;
+package AIWA.McpBackend.provider.aws.api.controller;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;

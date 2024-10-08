@@ -1,7 +1,7 @@
-package AIWA.McpBackend.Controller;
+package AIWA.McpBackend.provider;
 
-import AIWA.McpBackend.Entity.Member;
-import AIWA.McpBackend.Service.MemberService;
+import AIWA.McpBackend.entity.member.Member;
+import AIWA.McpBackend.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

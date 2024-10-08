@@ -1,5 +1,9 @@
-package AIWA.McpBackend;
+package AIWA.McpBackend.provider.aws.api.controller;
 
+import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
+import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
+import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
+import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

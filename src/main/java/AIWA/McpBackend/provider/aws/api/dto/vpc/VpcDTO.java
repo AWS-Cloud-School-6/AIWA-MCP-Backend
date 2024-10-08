@@ -1,5 +1,5 @@
 // VpcDTO.java
-package AIWA.McpBackend;
+package AIWA.McpBackend.provider.aws.api.dto.vpc;
 
 import lombok.Getter;
 

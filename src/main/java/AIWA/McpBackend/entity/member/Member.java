@@ -1,4 +1,4 @@
-package AIWA.McpBackend.Entity;
+package AIWA.McpBackend.entity.member;
 
 
 import jakarta.persistence.*;
