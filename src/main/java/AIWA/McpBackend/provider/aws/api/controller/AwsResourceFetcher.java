@@ -2,15 +2,12 @@ package AIWA.McpBackend.provider.aws.api.controller;
 
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.service.member.MemberService;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.*;
-
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,15 +15,31 @@ import java.util.List;
 @Service
 public class AwsResourceFetcher {
 
-    private final Ec2Client ec2Client;
+    private Ec2Client ec2Client;
 
-    public AwsResourceFetcher(@Value("${aws.accessKeyId}") String accessKey,
-                              @Value("${aws.secretAccessKey}") String secretKey,
-                              @Value("${aws.region}") String region) {
-        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKey, secretKey);
+    private final MemberService memberService;
+
+    @Autowired
+    public AwsResourceFetcher(MemberService memberService) { // 생성자를 통한 주입
+        this.memberService = memberService;
+    }
+
+
+    public void initializeClient(String email) {
+        // 특정 멤버의 AWS 자격 증명 가져오기
+/*        Member member = memberService.getMemberById(memberId); // memberId로 Member 객체 조회*/
+        Member member = memberService.getMemberByEmail(email);
+
+        // AWS 자격 증명 생성
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
+                member.getAccess_key(),
+                member.getSecret_key()
+        );
+
+        // EC2 클라이언트 생성
         this.ec2Client = Ec2Client.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
-                .region(Region.of(region))
+                .region(Region.of("ap-northeast-2")) // Member에서 리전 가져오기
                 .build();
     }
 

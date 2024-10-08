@@ -1,11 +1,10 @@
 <component name="libraryTable">
-  <library name="Gradle: software.amazon.awssdk:ec2:2.20.76">
+  <library name="Gradle: software.amazon.awssdk:ec2:2.20.76" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="software.amazon.awssdk" artifactId="ec2" version="2.20.76" />
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/ec2/2.20.76/6074c5ccd8d6dc5f849da7660d6894fd45e59fca/ec2-2.20.76.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/ec2/2.20.76/cb52a672334c064a9129c44945e16c3d4b7cd192/ec2-2.20.76-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

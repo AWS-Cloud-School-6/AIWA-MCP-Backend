@@ -2,7 +2,6 @@ package AIWA.McpBackend.service.member;
 
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.repository.member.MemberRepository;
-import AIWA.McpBackend.service.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +12,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final S3Service s3Service;
 
     public Member registerMember(Member member) {
         if (memberRepository.findByEmail(member.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
-        System.out.println(member.getName());
-        System.out.println(member.getEmail());
-        s3Service.createUserDirectory(member.getEmail());
         return memberRepository.save(member);
     }
 
@@ -34,12 +29,35 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    public Member updateCredentials(String email, String accessKey, String secretKey) {
-        Member member = getMemberByEmail(email);
-        member.setAccess_key(accessKey);
-        member.setSecret_key(secretKey);
 
-        s3Service.createTfvarsFile(email,accessKey,secretKey);
+    public Member addOrUpdateKeys(Long id, Map<String, String> keys) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        // 새로운 키가 제공된 경우, insert 또는 update 처리
+        if (keys.containsKey("accessKey") && member.getAccess_key() == null) {
+            member.setAccess_key(keys.get("accessKey")); // insert
+        } else if (keys.containsKey("accessKey")) {
+            member.setAccess_key(keys.get("accessKey")); // update
+        }
+
+        if (keys.containsKey("secretKey") && member.getSecret_key() == null) {
+            member.setSecret_key(keys.get("secretKey")); // insert
+        } else if (keys.containsKey("secretKey")) {
+            member.setSecret_key(keys.get("secretKey")); // update
+        }
+
+        return memberRepository.save(member);
+    }
+
+    // Access Key와 Secret Key 삭제
+    public Member removeKeys(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        member.setAccess_key(null);
+        member.setSecret_key(null);
+
         return memberRepository.save(member);
     }
 }
