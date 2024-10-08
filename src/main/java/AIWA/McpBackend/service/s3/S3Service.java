@@ -3,11 +3,14 @@ package AIWA.McpBackend.service.s3;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -60,11 +63,56 @@ public class S3Service {
         s3Client.putObject(bucketName, userPrefix + "terraform.tfvars", tfvarsContent);
     }
 
-    public void downloadFile(String s3Key, String localFilePath) {
-        s3Client.getObject(new GetObjectRequest(bucketName, s3Key), new File(localFilePath));
+
+
+    // main.tf 파일 내용 가져오기
+    public String getMainTfContent(String userId) throws Exception {
+        String key = "users/" + userId + "/main.tf";
+        return getFileContentFromS3(key);
     }
 
-    public void uploadFile(String localFilePath, String s3Key) {
-        s3Client.putObject(new PutObjectRequest(bucketName, s3Key, new File(localFilePath)));
+    // terraform.tfvars 파일 내용 가져오기
+    public String getTfVarsContent(String userId) throws Exception {
+        String key = "users/" + userId + "/terraform.tfvars";
+        return getFileContentFromS3(key);
     }
+
+    // terraform.tfstate 파일 내용 가져오기
+    public String getTfStateContent(String userId) throws Exception {
+        String key = "users/" + userId + "/terraform.tfstate";
+        return getFileContentFromS3(key);
+    }
+
+    // main.tf 파일 업로드
+    public void uploadMainTfContent(String userId, String content) {
+        String key = "users/" + userId + "/main.tf";
+        s3Client.putObject(bucketName, key, content);
+    }
+
+    // S3에서 파일 내용을 문자열로 가져오는 메서드
+    public String getFileContentFromS3(String key) throws Exception {
+        S3Object s3Object = s3Client.getObject(bucketName, key);
+
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(s3Object.getObjectContent(), StandardCharsets.UTF_8))) {
+
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append('\n');
+            }
+
+            return content.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception(key + " 파일을 읽는 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+
 }
