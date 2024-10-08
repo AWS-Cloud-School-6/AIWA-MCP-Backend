@@ -13,6 +13,7 @@ import java.io.*;
 public class Ec2Service {
 
     // 사용자 요청을 바탕으로 Terraform 명령 실행
+// 사용자 요청을 바탕으로 Terraform 명령 실행
     public String createEC2Instance(Ec2RequestDto ec2Request, String username) throws JSchException, IOException {
         // SSH를 통해 Terraform이 설치된 EC2에 접속
         JSch jsch = new JSch();
@@ -24,12 +25,12 @@ public class Ec2Service {
         session.connect();
 
         // 사용자별 워크스페이스 선택
-        String command = "cd /path/to/terraform && terraform workspace select " + username;
+        String command = "cd /path/to/terraform/" + username + " && terraform workspace select " + username;
         String result = executeRemoteCommand(session, command);
 
         // 워크스페이스가 없으면 새로 생성
         if (!result.contains("Workspace selected")) {
-            command = "cd /path/to/terraform && terraform workspace new " + username;
+            command = "cd /path/to/terraform/" + username + " && terraform workspace new " + username;
             result = executeRemoteCommand(session, command);
         }
 
@@ -38,7 +39,7 @@ public class Ec2Service {
         saveTerraformFile(terraformCode, username);
 
         // Terraform 명령어 실행 (init 및 apply)
-        command = "cd /path/to/terraform && terraform init && terraform apply -auto-approve";
+        command = String.format("cd /path/to/terraform/%s && terraform init && terraform apply -auto-approve", username);
         result = executeRemoteCommand(session, command);
 
         session.disconnect();
@@ -100,12 +101,18 @@ public class Ec2Service {
     }
 
     // Terraform 코드를 파일로 저장
+// Terraform 코드를 파일로 저장 (사용자별로 디렉토리 생성)
     private void saveTerraformFile(String terraformCode, String username) throws IOException {
-        String filePath = "/local/path/to/terraform/" + username + "/main.tf";
-        File dir = new File("/local/path/to/terraform/" + username);
+        String userDirectory = "/local/path/to/terraform/" + username;
+        String filePath = userDirectory + "/main.tf";
+
+        // 사용자별 디렉토리 존재 여부 확인 및 생성
+        File dir = new File(userDirectory);
         if (!dir.exists()) {
-            dir.mkdirs();  // 사용자별 디렉토리를 생성
+            dir.mkdirs();  // 사용자별 디렉토리 생성
         }
+
+        // Terraform 코드를 해당 사용자 디렉토리에 저장
         try (FileWriter writer = new FileWriter(filePath)) {
             writer.write(terraformCode);
         }
