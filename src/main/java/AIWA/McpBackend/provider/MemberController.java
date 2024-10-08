@@ -2,6 +2,7 @@ package AIWA.McpBackend.provider;
 
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.service.member.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,14 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
-
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     // 회원 등록
     @PostMapping("/register")

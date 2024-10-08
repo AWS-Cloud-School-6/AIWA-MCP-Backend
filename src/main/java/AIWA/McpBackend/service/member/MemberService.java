@@ -19,6 +19,8 @@ public class MemberService {
         if (memberRepository.findByEmail(member.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
+        System.out.println(member.getName());
+        System.out.println(member.getEmail());
         s3Service.createUserDirectory(member.getEmail());
         return memberRepository.save(member);
     }
