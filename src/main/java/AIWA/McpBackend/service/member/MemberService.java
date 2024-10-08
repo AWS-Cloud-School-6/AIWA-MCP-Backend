@@ -1,21 +1,17 @@
-package AIWA.McpBackend.Service;
+package AIWA.McpBackend.service.member;
 
-import AIWA.McpBackend.Entity.Member;
-import AIWA.McpBackend.Repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import AIWA.McpBackend.entity.member.Member;
+import AIWA.McpBackend.repository.member.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
-    @Autowired
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
 
     public Member registerMember(Member member) {
         if (memberRepository.findByEmail(member.getEmail()) != null) {
