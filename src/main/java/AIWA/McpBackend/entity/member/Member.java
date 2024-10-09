@@ -31,6 +31,10 @@ public class Member {
     private String access_key;
     private String secret_key;
 
-
+    public Member(String name, String password, String email) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
 
 }

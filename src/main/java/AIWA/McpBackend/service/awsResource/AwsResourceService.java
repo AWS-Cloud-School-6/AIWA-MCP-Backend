@@ -1,4 +1,4 @@
-package AIWA.McpBackend.provider.aws.api.controller;
+package AIWA.McpBackend.service.awsResource;
 
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.service.member.MemberService;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AwsResourceFetcher {
+public class AwsResourceService {
 
     private Ec2Client ec2Client;
 
     private final MemberService memberService;
 
     @Autowired
-    public AwsResourceFetcher(MemberService memberService) { // 생성자를 통한 주입
+    public AwsResourceService(MemberService memberService) { // 생성자를 통한 주입
         this.memberService = memberService;
     }
 
