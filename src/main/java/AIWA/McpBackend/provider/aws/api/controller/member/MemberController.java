@@ -10,6 +10,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+import AIWA.McpBackend.entity.member.Member;
+import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberCredentialDTO;
+import AIWA.McpBackend.service.member.MemberService;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
@@ -31,8 +42,14 @@ public class MemberController {
     }
 
     // 자격 증명 업데이트 페이지로 이동
+// 자격 증명 업데이트 페이지로 이동
     @GetMapping("/update-credentials")
-    public String showUpdateCredentialsPage() {
+    public String showUpdateCredentialsPage(HttpSession session, Model model) {
+        Member loggedInUser = (Member) session.getAttribute("user");
+        if (loggedInUser == null) {
+            return "redirect:/login";  // 로그인이 되어 있지 않으면 로그인 페이지로 리디렉션
+        }
+        model.addAttribute("email", loggedInUser.getEmail());  // 이메일 정보를 넘겨줌
         return "update-credentials";  // update-credentials.html로 이동
     }
 

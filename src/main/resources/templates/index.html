@@ -18,6 +18,7 @@
         <li><a href="/ec2">EC2 인스턴스 관리</a></li>
         <li><a href="/keypair">Key Pair 관리</a></li>
         <li><a href="/cloudwatch">CloudWatch 알람 관리</a></li>
+        <li><a href="/api/members/update-credentials">자격 증명 업데이트</a></li> <!-- 자격 증명 업데이트 링크 추가 -->
     </ul>
 
     <!-- 로그아웃 버튼 -->
@@ -30,7 +31,6 @@
 <div th:if="${email == 'anonymous'}">
     <p>로그인되지 않았습니다. <a href="/api/members/login">로그인</a> 후 서비스를 이용하세요.</p>
     <p><a href="/api/members/register">회원가입</a></p>
-    <p><a href="/api/members/update-credentials">자격 증명 업데이트</a></p>
 </div>
 
 </body>

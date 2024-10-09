@@ -42,6 +42,7 @@ public class SubnetService {
                 subnetRequest.getAvailabilityZone(),
                 subnetRequest.getSubnetName());
 
+        System.out.println(subnetTfContent);
         // 2. Subnet .tf 파일 이름 설정 (예: subnet_mySubnet.tf)
         String subnetTfFileName = String.format("subnet_%s.tf", subnetRequest.getSubnetName());
 
