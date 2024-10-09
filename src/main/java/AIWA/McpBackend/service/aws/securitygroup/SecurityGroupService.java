@@ -1,8 +1,8 @@
-package AIWA.McpBackend.service.securitygroup;
+package AIWA.McpBackend.service.aws.securitygroup;
 
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupRequestDto;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupRuleDto;
-import AIWA.McpBackend.service.s3.S3Service;
+import AIWA.McpBackend.service.aws.s3.S3Service;
 import AIWA.McpBackend.service.terraform.TerraformService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

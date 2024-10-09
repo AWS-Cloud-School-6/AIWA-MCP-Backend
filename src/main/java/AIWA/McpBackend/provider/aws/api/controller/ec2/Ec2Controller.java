@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.ec2;
 
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2RequestDto;
-import AIWA.McpBackend.service.ec2.Ec2Service;
+import AIWA.McpBackend.service.aws.ec2.Ec2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

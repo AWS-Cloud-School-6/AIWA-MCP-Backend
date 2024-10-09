@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.natgateway;
 
 import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayRequestDto;
-import AIWA.McpBackend.service.natgateway.NatGatewayService;
+import AIWA.McpBackend.service.aws.natgateway.NatGatewayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

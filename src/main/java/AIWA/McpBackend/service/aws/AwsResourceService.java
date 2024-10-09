@@ -1,4 +1,4 @@
-package AIWA.McpBackend.service.awsResource;
+package AIWA.McpBackend.service.aws;
 
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.service.member.MemberService;

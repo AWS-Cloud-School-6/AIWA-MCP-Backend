@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.vpc;
 
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcRequestDto;
-import AIWA.McpBackend.service.vpc.VpcService;
+import AIWA.McpBackend.service.aws.vpc.VpcService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

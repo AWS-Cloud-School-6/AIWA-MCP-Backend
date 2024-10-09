@@ -1,10 +1,10 @@
-package AIWA.McpBackend.provider.aws.api.controller.awsResource;
+package AIWA.McpBackend.provider.aws;
 
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
-import AIWA.McpBackend.service.awsResource.AwsResourceService;
+import AIWA.McpBackend.service.aws.AwsResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
