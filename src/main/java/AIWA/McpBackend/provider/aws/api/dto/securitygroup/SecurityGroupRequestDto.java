@@ -1,10 +1,12 @@
 package AIWA.McpBackend.provider.aws.api.dto.securitygroup;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
 @Data
+@Getter
 public class SecurityGroupRequestDto {
     private String securityGroupName;  // Security Group 이름
     private String vpcName;            // VPC 이름
