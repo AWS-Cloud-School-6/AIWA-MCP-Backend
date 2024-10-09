@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.securitygroup;
 
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupRequestDto;
-import AIWA.McpBackend.service.securitygroup.SecurityGroupService;
+import AIWA.McpBackend.service.aws.securitygroup.SecurityGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

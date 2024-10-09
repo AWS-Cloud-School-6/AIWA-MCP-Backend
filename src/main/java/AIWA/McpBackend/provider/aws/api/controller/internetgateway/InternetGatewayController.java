@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.internetgateway;
 
 import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayRequestDto;
-import AIWA.McpBackend.service.internetgateway.InternetGatewayService;
+import AIWA.McpBackend.service.aws.internetgateway.InternetGatewayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

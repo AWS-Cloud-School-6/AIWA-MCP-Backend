@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.subnet;
 
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetRequestDto;
-import AIWA.McpBackend.service.subnet.SubnetService;
+import AIWA.McpBackend.service.aws.subnet.SubnetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

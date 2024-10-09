@@ -1,7 +1,7 @@
-package AIWA.McpBackend.service.routetable;
+package AIWA.McpBackend.service.aws.routetable;
 
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableRequestDto;
-import AIWA.McpBackend.service.s3.S3Service;
+import AIWA.McpBackend.service.aws.s3.S3Service;
 import AIWA.McpBackend.service.terraform.TerraformService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

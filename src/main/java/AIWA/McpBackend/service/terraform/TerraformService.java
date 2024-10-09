@@ -1,8 +1,7 @@
 package AIWA.McpBackend.service.terraform;
 
-import AIWA.McpBackend.service.s3.S3Service;
+import AIWA.McpBackend.service.aws.s3.S3Service;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import net.schmizz.sshj.common.IOUtils;
 import org.springframework.stereotype.Service;
@@ -14,10 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 

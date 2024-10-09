@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.routetable;
 
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableRequestDto;
-import AIWA.McpBackend.service.routetable.RouteTableService;
+import AIWA.McpBackend.service.aws.routetable.RouteTableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
