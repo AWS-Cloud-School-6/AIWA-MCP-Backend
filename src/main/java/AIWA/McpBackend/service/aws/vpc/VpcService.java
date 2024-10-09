@@ -6,6 +6,9 @@ import AIWA.McpBackend.service.terraform.TerraformService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class VpcService {
@@ -65,4 +68,20 @@ public class VpcService {
         terraformService.executeTerraform(userId);
     }
 
+    /**
+     * 사용자가 생성한 VPC 목록을 가져옵니다.
+     *
+     * @param userId 사용자 ID
+     * @return 사용자가 생성한 VPC 목록
+     */
+    public List<String> getUserVpcList(String userId) {
+        String userPrefix = "users/" + userId + "/";
+        List<String> vpcFiles = s3Service.listFiles(userPrefix, "vpc_");
+
+        // 파일 경로에서 마지막 슬래시 이후의 파일 이름만 추출하여 반환
+        return vpcFiles.stream()
+                .map(filename -> filename.substring(filename.lastIndexOf('/') + 1)) // 경로 제거하고 파일 이름만 추출
+                .map(filename -> filename.replace("vpc_", "").replace(".tf", ""))  // vpc_ 접두사와 .tf 확장자 제거
+                .collect(Collectors.toList());
+    }
 }

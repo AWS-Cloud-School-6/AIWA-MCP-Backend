@@ -7,6 +7,9 @@ import AIWA.McpBackend.service.terraform.TerraformService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class SubnetService {
@@ -70,5 +73,17 @@ public class SubnetService {
 
         // 3. Terraform 실행 요청
         terraformService.executeTerraform(userId);
+    }
+
+
+    public List<String> getUserSubnetList(String userId) {
+        String userPrefix = "users/" + userId + "/";
+        List<String> subnetFiles = s3Service.listFiles(userPrefix, "subnet_");
+
+        // 파일 경로에서 마지막 슬래시 이후의 파일 이름만 추출하고, 'subnet_' 접두사와 '.tf' 확장자를 제거하여 반환
+        return subnetFiles.stream()
+                .map(filename -> filename.substring(filename.lastIndexOf('/') + 1)) // 경로 제거하고 파일 이름만 추출
+                .map(filename -> filename.replace("subnet_", "").replace(".tf", ""))  // subnet_ 접두사와 .tf 확장자 제거
+                .collect(Collectors.toList());
     }
 }

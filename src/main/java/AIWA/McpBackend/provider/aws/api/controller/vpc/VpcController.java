@@ -3,11 +3,13 @@ package AIWA.McpBackend.provider.aws.api.controller.vpc;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcRequestDto;
 import AIWA.McpBackend.service.aws.vpc.VpcService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+import java.util.List;
+
+@Controller
 @RequestMapping("/api/vpc")
 @RequiredArgsConstructor
 public class VpcController {
@@ -22,18 +24,15 @@ public class VpcController {
      * @return 생성 성공 메시지 또는 오류 메시지
      */
     @PostMapping("/create")
-    public ResponseEntity<String> createVpc(
-            @RequestBody VpcRequestDto vpcRequest,
+    public String createVpc(
+            @ModelAttribute VpcRequestDto vpcRequest,
             @RequestParam String userId) {
         try {
             vpcService.createVpc(vpcRequest, userId);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("VPC 생성 요청이 성공적으로 처리되었습니다.");
+            return "redirect:/api/vpc/list?userId=" + userId;
         } catch (Exception e) {
-            // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("VPC 생성 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/api/vpc/list?error";
         }
     }
 
@@ -44,19 +43,34 @@ public class VpcController {
      * @param userId  사용자 ID (요청 파라미터로 전달)
      * @return 삭제 성공 메시지 또는 오류 메시지
      */
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteVpc(
+    @PostMapping("/delete")
+    public String deleteVpc(
             @RequestParam String vpcName,
             @RequestParam String userId) {
         try {
             vpcService.deleteVpc(vpcName, userId);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("VPC 삭제 요청이 성공적으로 처리되었습니다.");
+            return "redirect:/api/vpc/list?userId=" + userId;
         } catch (Exception e) {
-            // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("VPC 삭제 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/api/vpc/list?error";
         }
+    }
+
+    /**
+     * 사용자가 생성한 VPC 목록을 조회합니다.
+     *
+     * @param userId 사용자 ID
+     * @param model  VPC 목록을 모델에 추가하여 뷰로 전달
+     * @return VPC 목록 페이지
+     */
+    @GetMapping("/list")
+    public String listVpcs(@RequestParam String userId, Model model) {
+        List<String> vpcList = vpcService.getUserVpcList(userId);
+        if(!vpcList.isEmpty()) {
+            System.out.println(vpcList.get(0));
+        }
+        model.addAttribute("vpcList", vpcList);
+        model.addAttribute("userId", userId);
+        return "vpc-list";  // vpc-list.html 뷰로 이동
     }
 }

@@ -4,6 +4,9 @@ import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.repository.member.MemberRepository;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +18,27 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     private final S3Service s3Service;
+
+    public Member getLoggedInMember() {
+        // SecurityContextHolder에서 Authentication 객체 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Authentication 객체가 null인지 확인하고 처리
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;  // 로그인되지 않은 상태
+        }
+
+        // 인증된 사용자의 principal 객체 확인
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            // username을 통해 사용자 정보 조회 (예: email)
+            return getMemberByEmail(username);
+        } else {
+            return null; // 인증 정보 없음
+        }
+    }
 
     public Member registerMember(Member member) {
         if (memberRepository.findByEmail(member.getEmail()) != null) {
@@ -56,4 +80,18 @@ public class MemberService {
 
         return memberRepository.save(member);
     }
+
+    public Member login(String email, String password) {
+        // 이메일로 회원 조회
+        Member member = memberRepository.findByEmail(email);
+
+        // 비밀번호 검증
+        if (member != null && member.getPassword().equals(password)) {
+            return member;  // 로그인 성공
+        }
+
+        return null;  // 로그인 실패
+    }
+
+
 }

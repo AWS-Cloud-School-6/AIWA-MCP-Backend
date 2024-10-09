@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>VPC 관리</title>
+</head>
+<body>
+<h1>VPC 목록</h1>
+
+<!-- VPC 목록 표시 -->
+<h2>생성된 VPC 목록</h2>
+<ul>
+  <li th:each="vpcName : ${vpcList}">
+    <span th:text="${vpcName}">VPC 이름</span>
+    <form action="/api/vpc/delete" method="post" style="display:inline;">
+      <input type="hidden" name="vpcName" th:value="${vpcName}">
+      <input type="hidden" name="userId" th:value="${userId}">
+      <button type="submit">삭제</button>
+    </form>
+  </li>
+</ul>
+
+<!-- VPC 생성 -->
+<h2>VPC 생성</h2>
+<form action="/api/vpc/create" method="post">
+  <label for="vpcName">VPC 이름:</label>
+  <input type="text" id="vpcName" name="vpcName" required><br>
+
+  <label for="cidrBlock">CIDR 블록:</label>
+  <input type="text" id="cidrBlock" name="cidrBlock" required><br>
+
+  <input type="hidden" name="userId" th:value="${userId}">
+
+  <button type="submit">VPC 생성</button>
+</form>
+
+<a href="/">홈으로 돌아가기</a>
+</body>
+</html>

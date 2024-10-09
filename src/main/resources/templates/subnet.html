@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Subnet 관리</title>
+</head>
+<body>
+<h1>Subnet 관리</h1>
+
+<!-- Subnet 목록 표시 -->
+<h2>생성된 Subnet 목록</h2>
+<ul>
+  <li th:each="subnetName : ${subnetList}">
+    <span th:text="${subnetName}">Subnet 이름</span>
+    <form action="/api/subnet/delete" method="post" style="display:inline;">
+      <input type="hidden" name="subnetName" th:value="${subnetName}">
+      <input type="hidden" name="userId" th:value="${userId}">
+      <button type="submit">삭제</button>
+    </form>
+  </li>
+</ul>
+
+<!-- Subnet 생성 -->
+<h2>Subnet 생성</h2>
+<form action="/api/subnet/create" method="post">
+  <label for="subnetName">Subnet 이름:</label>
+  <input type="text" id="subnetName" name="subnetName" required><br>
+
+  <label for="cidrBlock">CIDR 블록:</label>
+  <input type="text" id="cidrBlock" name="cidrBlock" required><br>
+
+  <label for="availabilityZone">가용 영역:</label>
+  <input type="text" id="availabilityZone" name="availabilityZone" required><br>
+
+  <input type="hidden" name="userId" th:value="${userId}">
+
+  <button type="submit">Subnet 생성</button>
+</form>
+
+<a href="/">홈으로 돌아가기</a>
+</body>
+</html>

@@ -9,6 +9,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -138,4 +139,24 @@ public class S3Service {
         return bucketName;
     }
 
+
+    /**
+     * 특정 접두사로 시작하는 파일 목록을 반환합니다.
+     *
+     * @param prefix   디렉토리 경로 (예: users/userId/)
+     * @param filenamePrefix 파일 이름 접두사 (예: vpc_)
+     * @return 파일 목록
+     */
+    public List<String> listFiles(String prefix, String filenamePrefix) {
+        ListObjectsV2Request request = new ListObjectsV2Request()
+                .withBucketName(bucketName)
+                .withPrefix(prefix);
+
+        return s3Client.listObjectsV2(request)
+                .getObjectSummaries()
+                .stream()
+                .map(S3ObjectSummary::getKey)
+                .filter(key -> key.contains(filenamePrefix))
+                .collect(Collectors.toList());
+    }
 }
