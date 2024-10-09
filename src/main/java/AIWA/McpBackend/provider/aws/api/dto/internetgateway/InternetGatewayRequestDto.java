@@ -1,4 +1,4 @@
-package AIWA.McpBackend.provider.aws.api.dto.internetGateway;
+package AIWA.McpBackend.provider.aws.api.dto.internetgateway;
 
 import lombok.Data;
 
