@@ -32,6 +32,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
+	implementation 'com.jcraft:jsch:0.1.55'
+	implementation 'com.hierynomus:sshj:0.34.0'
+
 	implementation 'software.amazon.awssdk:s3:2.20.0'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.574' // 최신 AWS SDK v1 버전
 	implementation 'com.amazonaws:aws-java-sdk-core:1.12.574' // Core 라이브러리

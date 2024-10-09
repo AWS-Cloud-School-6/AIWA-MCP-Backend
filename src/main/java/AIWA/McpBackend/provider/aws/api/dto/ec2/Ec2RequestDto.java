@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class Ec2Request {
+public class Ec2RequestDto {
     private String instanceName;
     private String amiId;
     private String instanceType;
