@@ -41,6 +41,8 @@ public class TerraformService {
     private String privateKeyPath;
 
     public void executeTerraform(String userId) throws Exception {
+
+        boolean check_Flag=false;
         String userPrefix = "users/" + userId + "/";
 
         // 1. S3에서 파일 다운로드
@@ -52,6 +54,11 @@ public class TerraformService {
         File tfStateFile = null;
         if (s3Client.doesObjectExist(s3Service.getBucketName(), tfStateS3Key)) {
             tfStateFile = downloadFileFromS3(tfStateS3Key);
+        } else {
+            // tfstate 파일이 S3에 존재하지 않는 경우, 빈 임시 파일 생성
+            check_Flag=true;
+            tfStateFile = File.createTempFile("terraform.tfstate", null);
+            Files.write(tfStateFile.toPath(), "{}".getBytes(StandardCharsets.UTF_8));
         }
 
         SSHClient ssh = new SSHClient();
@@ -70,7 +77,7 @@ public class TerraformService {
             ssh.newSCPFileTransfer().upload(tfVarsFile.getAbsolutePath(), remoteDir + "/terraform.tfvars");
 
             // terraform.tfstate 파일이 존재하는 경우에만 업로드
-            if (tfStateFile != null && tfStateFile.exists()) {
+            if (!check_Flag) {
                 ssh.newSCPFileTransfer().upload(tfStateFile.getAbsolutePath(), remoteDir + "/terraform.tfstate");
             }
 
@@ -79,12 +86,10 @@ public class TerraformService {
             executeRemoteCommand(ssh, "cd " + remoteDir + " && terraform apply -auto-approve");
 
             // 6. 업데이트된 상태 파일을 원격 서버에서 가져오기 및 S3에 업로드
-            if (tfStateFile != null && tfStateFile.exists()) {
-                ssh.newSCPFileTransfer().download(remoteDir + "/terraform.tfstate", tfStateFile.getAbsolutePath());
+            ssh.newSCPFileTransfer().download(remoteDir + "/terraform.tfstate", tfStateFile.getAbsolutePath());
 
-                // 업데이트된 상태 파일을 S3에 업로드
-                uploadFileToS3(tfStateFile, tfStateS3Key);
-            }
+            // 업데이트된 상태 파일을 S3에 업로드
+            uploadFileToS3(tfStateFile, tfStateS3Key);
 
             // 7. 원격 서버의 디렉토리 삭제
             executeRemoteCommand(ssh, "rm -rf " + remoteDir);
