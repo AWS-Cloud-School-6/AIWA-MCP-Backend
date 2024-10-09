@@ -1,4 +1,4 @@
-package AIWA.McpBackend.provider.aws.api.dto.memberCredential;
+package AIWA.McpBackend.provider.aws.api.dto.membercredential;
 
 import lombok.Getter;
 

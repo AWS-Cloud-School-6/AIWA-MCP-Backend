@@ -1,7 +1,7 @@
 package AIWA.McpBackend.provider.aws.api.controller.member;
 
 import AIWA.McpBackend.entity.member.Member;
-import AIWA.McpBackend.provider.aws.api.dto.memberCredential.MemberCredentialDTO;
+import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberCredentialDTO;
 import AIWA.McpBackend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
