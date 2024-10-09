@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -45,38 +46,53 @@ public class TerraformService {
         // 1. S3에서 파일 다운로드
         File mainTfFile = downloadFileFromS3(userPrefix + "main.tf");
         File tfVarsFile = downloadFileFromS3(userPrefix + "terraform.tfvars");
-        File tfStateFile = downloadFileFromS3(userPrefix + "terraform.tfstate");
+
+        // 2. terraform.tfstate 파일 존재 여부 확인 후 다운로드
+        String tfStateS3Key = userPrefix + "terraform.tfstate";
+        File tfStateFile = null;
+        if (s3Client.doesObjectExist(s3Service.getBucketName(), tfStateS3Key)) {
+            tfStateFile = downloadFileFromS3(tfStateS3Key);
+        }
 
         SSHClient ssh = new SSHClient();
         ssh.addHostKeyVerifier(new PromiscuousVerifier()); // 보안상 위험, 실제 운영 환경에서는 호스트 키 검증을 설정하세요.
 
         try {
-            // 2. SSH 연결 및 인증
+            // 3. SSH 연결 및 인증
             ssh.connect(remoteHost, remotePort);
             ssh.authPublickey(remoteUsername, privateKeyPath);
 
-            // 3. 원격 서버에 파일 전송
+            // 4. 원격 서버에 파일 전송
             String remoteDir = "/home/" + remoteUsername + "/terraform/" + userId;
             executeRemoteCommand(ssh, "mkdir -p " + remoteDir);
 
             ssh.newSCPFileTransfer().upload(mainTfFile.getAbsolutePath(), remoteDir + "/main.tf");
             ssh.newSCPFileTransfer().upload(tfVarsFile.getAbsolutePath(), remoteDir + "/terraform.tfvars");
-//            ssh.newSCPFileTransfer().upload(tfStateFile.getAbsolutePath(), remoteDir + "/terraform.tfstate");
 
-            // 4. 원격 서버에서 Terraform 명령 실행
+            // terraform.tfstate 파일이 존재하는 경우에만 업로드
+            if (tfStateFile != null && tfStateFile.exists()) {
+                ssh.newSCPFileTransfer().upload(tfStateFile.getAbsolutePath(), remoteDir + "/terraform.tfstate");
+            }
+
+            // 5. 원격 서버에서 Terraform 명령 실행
             executeRemoteCommand(ssh, "cd " + remoteDir + " && terraform init");
             executeRemoteCommand(ssh, "cd " + remoteDir + " && terraform apply -auto-approve");
 
-            // 5. 업데이트된 상태 파일을 원격 서버에서 가져오기
-            ssh.newSCPFileTransfer().download(remoteDir + "/terraform.tfstate", tfStateFile.getAbsolutePath());
+            // 6. 업데이트된 상태 파일을 원격 서버에서 가져오기 및 S3에 업로드
+            if (tfStateFile != null && tfStateFile.exists()) {
+                ssh.newSCPFileTransfer().download(remoteDir + "/terraform.tfstate", tfStateFile.getAbsolutePath());
 
-            // 6. 업데이트된 상태 파일을 S3에 업로드
-            uploadFileToS3(tfStateFile, userPrefix + "terraform.tfstate");
+                // 업데이트된 상태 파일을 S3에 업로드
+                uploadFileToS3(tfStateFile, tfStateS3Key);
+            }
+
+            // 7. 원격 서버의 디렉토리 삭제
+            executeRemoteCommand(ssh, "rm -rf " + remoteDir);
 
         } catch (IOException e) {
             throw new Exception("Terraform 실행 중 오류 발생: " + e.getMessage(), e);
         } finally {
-            // 7. SSH 연결 종료 및 로컬 임시 파일 삭제
+            // 8. SSH 연결 종료 및 로컬 임시 파일 삭제
             try {
                 if (ssh.isConnected()) {
                     ssh.disconnect();
@@ -87,9 +103,13 @@ public class TerraformService {
 
             deleteTempFile(mainTfFile);
             deleteTempFile(tfVarsFile);
-            deleteTempFile(tfStateFile);
+            if (tfStateFile != null) {
+                deleteTempFile(tfStateFile);
+            }
         }
     }
+
+
 
     private File downloadFileFromS3(String s3Key) throws IOException {
         S3Object s3Object = s3Client.getObject(s3Service.getBucketName(), s3Key);

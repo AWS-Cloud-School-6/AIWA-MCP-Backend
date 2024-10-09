@@ -48,9 +48,9 @@ public class S3Service {
 
         s3Client.putObject(bucketName, userPrefix + "main.tf", mainTfContent);
 
-        // 빈 상태 파일
-        String emptyState = "{}";
-        s3Client.putObject(bucketName, userPrefix + "terraform.tfstate", emptyState);
+//        // 빈 상태 파일
+//        String emptyState = "{}";
+//        s3Client.putObject(bucketName, userPrefix + "terraform.tfstate", emptyState);
     }
 
     public void createTfvarsFile(String userId, String accessKey, String secretKey) {
