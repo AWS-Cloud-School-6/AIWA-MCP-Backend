@@ -3,22 +3,18 @@ package AIWA.McpBackend.provider.aws.api.dto.ec2;
 
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
 public class Ec2InstanceDTO {
-    private String instanceId;
-    private String state;
+    private final String instanceId;
+    private final String state;
+    private final Map<String, String> tags;
 
-    public Ec2InstanceDTO(String instanceId, String state) {
+    public Ec2InstanceDTO(String instanceId, String state, Map<String, String> tags) {
         this.instanceId = instanceId;
         this.state = state;
+        this.tags = tags;
     }
 
-    // Getters
-    public String getInstanceId() {
-        return instanceId;
-    }
-
-    public String getState() {
-        return state;
-    }
 }

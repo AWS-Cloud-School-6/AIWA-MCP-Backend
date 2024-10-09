@@ -1,13 +1,11 @@
-package AIWA.McpBackend.provider;
+package AIWA.McpBackend.provider.aws.api.controller.member;
 
 import AIWA.McpBackend.entity.member.Member;
+import AIWA.McpBackend.provider.aws.api.dto.memberCredential.MemberCredentialDTO;
 import AIWA.McpBackend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +30,8 @@ public class MemberController {
 
 
     @PostMapping("/update-credentials")
-    public ResponseEntity<String> updateCredentials(@RequestBody Member member) {
-        memberService.addOrUpdateKeys(member.getEmail(), member.getAccess_key(),member.getSecret_key());
+    public ResponseEntity<String> updateCredentials(@RequestBody MemberCredentialDTO memberCredentialDto) {
+        memberService.addOrUpdateKeys(memberCredentialDto.getEmail(), memberCredentialDto.getAccess_key(),memberCredentialDto.getSecret_key());
         return ResponseEntity.ok("자격 증명이 업데이트되었습니다.");
     }
 

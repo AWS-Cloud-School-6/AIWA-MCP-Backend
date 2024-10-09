@@ -48,6 +48,7 @@
     <orderEntry type="library" name="Gradle: software.amazon.awssdk:s3:2.20.0" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-s3:1.12.574" level="project" />
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-core:1.12.574" level="project" />
+    <orderEntry type="library" name="Gradle: javax.xml.bind:jaxb-api:2.3.1" level="project" />
     <orderEntry type="library" name="Gradle: com.h2database:h2:2.2.224" level="project" />
     <orderEntry type="library" name="Gradle: software.amazon.awssdk:aws-query-protocol:2.20.76" level="project" />
     <orderEntry type="library" name="Gradle: software.amazon.awssdk:protocol-core:2.20.76" level="project" />
@@ -91,6 +92,7 @@
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.17.2" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.17.2" level="project" />
     <orderEntry type="library" name="Gradle: joda-time:joda-time:2.8.1" level="project" />
+    <orderEntry type="library" name="Gradle: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" name="Gradle: software.amazon.eventstream:eventstream:1.0.1" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:2.0.16" level="project" />
     <orderEntry type="library" name="Gradle: org.reactivestreams:reactive-streams:1.0.4" level="project" />
