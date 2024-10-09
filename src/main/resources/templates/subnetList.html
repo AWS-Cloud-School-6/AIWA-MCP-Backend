@@ -22,8 +22,10 @@
 <!-- Subnet 생성 -->
 <h2>Subnet 생성</h2>
 <form action="/api/subnet/create" method="post">
-  <label for="vpcName">VPC 이름:</label>
-  <input type="text" id="vpcName" name="vpcName" required><br>
+  <label for="vpcName">VPC 선택:</label>
+  <select id="vpcName" name="vpcName" required>
+    <option th:each="vpc : ${vpcList}" th:value="${vpc}" th:text="${vpc}">VPC 선택</option>
+  </select><br>
 
   <label for="subnetName">Subnet 이름:</label>
   <input type="text" id="subnetName" name="subnetName" required><br>
