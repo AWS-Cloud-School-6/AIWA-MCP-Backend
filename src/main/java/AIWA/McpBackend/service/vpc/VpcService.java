@@ -58,7 +58,7 @@ public class VpcService {
         String vpcTfFileName = String.format("vpc_%s.tf", vpcName);
 
         // 2. S3에서 해당 VPC .tf 파일 삭제
-        String s3Key = "users/" + userId + "/vpcs/" + vpcTfFileName;
+        String s3Key = "users/" + userId + "/" + vpcTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청
