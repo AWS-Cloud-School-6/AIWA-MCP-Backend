@@ -23,17 +23,17 @@ public class Ec2Service {
     public void createEC2Instance(Ec2RequestDto instanceRequest, String userId) throws Exception {
         // 1. EC2 인스턴스 .tf 파일 내용 생성
         String ec2TfContent = String.format("""
-                resource "aws_instance" "%s" {
-                  ami           = "%s"
-                  instance_type = "%s"
-                  subnet_id     = aws_subnet.%s.id
-                  security_groups = [aws_security_group.%s.name]
-                  key_name = "%s"
-                  tags = {
-                    Name = "%s"
-                  }
-                }
-                """,
+            resource "aws_instance" "%s" {
+              ami           = "%s"
+              instance_type = "%s"
+              subnet_id     = aws_subnet.%s.id
+              vpc_security_group_ids = [aws_security_group.%s.id]
+              key_name = "%s"
+              tags = {
+                Name = "%s"
+              }
+            }
+            """,
                 instanceRequest.getInstanceName(),
                 instanceRequest.getAmiId(),
                 instanceRequest.getInstanceType(),
