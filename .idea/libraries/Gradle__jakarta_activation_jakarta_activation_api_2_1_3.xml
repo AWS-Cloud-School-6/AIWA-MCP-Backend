@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: jakarta.activation:jakarta.activation-api:2.1.3">
+  <library name="Gradle: jakarta.activation:jakarta.activation-api:2.1.3" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/jakarta.activation/jakarta.activation-api/2.1.3/fa165bd70cda600368eee31555222776a46b881f/jakarta.activation-api-2.1.3.jar!/" />
     </CLASSES>

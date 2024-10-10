@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: org.springframework.security:spring-security-crypto:6.3.3">
+  <library name="Gradle: org.springframework.security:spring-security-crypto:6.3.3" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-crypto/6.3.3/a44e901cd1cfa1d6c20d30b69b83499e12e607a1/spring-security-crypto-6.3.3.jar!/" />
     </CLASSES>

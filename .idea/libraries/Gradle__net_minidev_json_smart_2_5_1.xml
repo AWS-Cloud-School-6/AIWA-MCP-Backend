@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: net.minidev:json-smart:2.5.1">
+  <library name="Gradle: net.minidev:json-smart:2.5.1" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.minidev/json-smart/2.5.1/4c11d2808d009132dfbbf947ebf37de6bf266c8e/json-smart-2.5.1.jar!/" />
     </CLASSES>
