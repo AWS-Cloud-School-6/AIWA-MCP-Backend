@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: org.junit.jupiter:junit-jupiter-params:5.10.3">
+  <library name="Gradle: org.junit.jupiter:junit-jupiter-params:5.10.3" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-params/5.10.3/4852f4e4af9074d9214213b199751f99efeab8b9/junit-jupiter-params-5.10.3.jar!/" />
     </CLASSES>
