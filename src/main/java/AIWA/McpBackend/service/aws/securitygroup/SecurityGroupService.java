@@ -16,41 +16,38 @@ public class SecurityGroupService {
     private final S3Service s3Service;
     private final TerraformService terraformService;
 
-    /**
-     * Security Group을 생성합니다.
-     *
-     * @param securityGroupRequest Security Group 생성 요청 DTO
-     * @param userId               사용자 ID
-     * @throws Exception Security Group 생성 중 발생한 예외
-     */
     public void createSecurityGroup(SecurityGroupRequestDto securityGroupRequest, String userId) throws Exception {
         // 1. Security Group 리소스 블록 생성
         StringBuilder sgTfContent = new StringBuilder(String.format("""
-                resource "aws_security_group" "%s" {
-                  vpc_id = aws_vpc.%s.id
-                  tags = {
-                    Name = "%s"
-                  }
-                }
-                """,
+            resource "aws_security_group" "%s" {
+              vpc_id = aws_vpc.%s.id
+              tags = {
+                Name = "%s"
+              }
+
+              // 인바운드 규칙
+            """,
                 securityGroupRequest.getSecurityGroupName(),
                 securityGroupRequest.getVpcName(),
                 securityGroupRequest.getSecurityGroupName()));
 
-        // 2. 인바운드 규칙 추가
+        // 2. 인바운드 규칙 추가 (보안 그룹 블록 안에 위치)
         appendSecurityGroupRules(sgTfContent, securityGroupRequest.getInboundRules(), "ingress");
 
-        // 3. 아웃바운드 규칙 추가
+        // 3. 아웃바운드 규칙 추가 (보안 그룹 블록 안에 위치)
         appendSecurityGroupRules(sgTfContent, securityGroupRequest.getOutboundRules(), "egress");
 
-        // 4. Security Group .tf 파일 이름 설정
+        // 4. Security Group 리소스 블록 닫기
+        sgTfContent.append("}\n");
+
+        // 5. Security Group .tf 파일 이름 설정
         String sgTfFileName = String.format("security_group_%s.tf", securityGroupRequest.getSecurityGroupName());
 
-        // 5. S3에 Security Group .tf 파일 업로드
+        // 6. S3에 Security Group .tf 파일 업로드
         String s3Key = "users/" + userId + "/" + sgTfFileName;
         s3Service.uploadFileContent(s3Key, sgTfContent.toString());
 
-        // 6. Terraform 실행 요청
+        // 7. Terraform 실행 요청
         terraformService.executeTerraform(userId);
     }
 
@@ -64,13 +61,13 @@ public class SecurityGroupService {
     private void appendSecurityGroupRules(StringBuilder contentBuilder, List<SecurityGroupRuleDto> rules, String ruleType) {
         for (SecurityGroupRuleDto rule : rules) {
             contentBuilder.append(String.format("""
-                    %s {
-                      protocol = "%s"
-                      from_port = "%s"
-                      to_port = "%s"
-                      cidr_blocks = ["%s"]
-                    }
-                    """,
+            %s {
+              protocol    = "%s"
+              from_port   = %s
+              to_port     = %s
+              cidr_blocks = ["%s"]
+            }
+            """,
                     ruleType,
                     rule.getProtocol(),
                     rule.getFromPort(),
