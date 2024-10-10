@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: com.hierynomus:sshj:0.34.0">
+  <library name="Gradle: com.hierynomus:sshj:0.34.0" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.hierynomus/sshj/0.34.0/637207d2bd1676d21bfcd14975050c8e9b229e87/sshj-0.34.0.jar!/" />
     </CLASSES>

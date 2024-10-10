@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: commons-codec:commons-codec:1.16.1">
+  <library name="Gradle: commons-codec:commons-codec:1.16.1" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.16.1/47bd4d333fba53406f6c6c51884ddbca435c8862/commons-codec-1.16.1.jar!/" />
     </CLASSES>

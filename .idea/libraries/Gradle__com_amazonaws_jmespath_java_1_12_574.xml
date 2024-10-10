@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: com.amazonaws:jmespath-java:1.12.574">
+  <library name="Gradle: com.amazonaws:jmespath-java:1.12.574" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/jmespath-java/1.12.574/9138a8f0dc2bce906602ba8c22d7a44a77128e7/jmespath-java-1.12.574.jar!/" />
     </CLASSES>

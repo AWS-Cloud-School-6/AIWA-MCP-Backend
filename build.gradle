@@ -37,6 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	implementation 'software.amazon.awssdk:s3:2.20.0'
+	implementation 'software.amazon.awssdk:kms:2.20.100'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.574' // 최신 AWS SDK v1 버전
 	implementation 'com.amazonaws:aws-java-sdk-core:1.12.574' // Core 라이브러리
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
