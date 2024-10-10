@@ -27,8 +27,9 @@ public class Member {
     @Column(unique = true, nullable = false)
     private String email;
 
-
+    @Column(length = 1000)
     private String access_key;
+    @Column(length = 1000)
     private String secret_key;
 
     public Member(String name, String password, String email) {

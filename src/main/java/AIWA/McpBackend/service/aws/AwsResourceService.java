@@ -1,6 +1,7 @@
 package AIWA.McpBackend.service.aws;
 
 import AIWA.McpBackend.entity.member.Member;
+import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.service.member.MemberService;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -9,6 +10,7 @@ import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.kms.KmsClient;
 
 import java.util.List;
 
@@ -18,10 +20,12 @@ public class AwsResourceService {
     private Ec2Client ec2Client;
 
     private final MemberService memberService;
+    private final KmsService kmsService;
 
     @Autowired
-    public AwsResourceService(MemberService memberService) { // 생성자를 통한 주입
+    public AwsResourceService(MemberService memberService, KmsService kmsService) { // 생성자를 통한 주입
         this.memberService = memberService;
+        this.kmsService = kmsService;
     }
 
 
@@ -32,8 +36,8 @@ public class AwsResourceService {
 
         // AWS 자격 증명 생성
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
-                member.getAccess_key(),
-                member.getSecret_key()
+                kmsService.decrypt(member.getAccess_key()),
+                kmsService.decrypt(member.getSecret_key())
         );
 
         // EC2 클라이언트 생성

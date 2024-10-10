@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Gradle: io.netty:netty-transport-native-unix-common:4.1.113.Final">
+  <library name="Gradle: io.netty:netty-transport-native-unix-common:4.1.113.Final" external-system-id="GRADLE">
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-native-unix-common/4.1.113.Final/e8d1d4ba444e203fd8af42a9d22e1032d89daa32/netty-transport-native-unix-common-4.1.113.Final.jar!/" />
     </CLASSES>
