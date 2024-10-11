@@ -21,21 +21,25 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    # 3. Gradle로 빌드
+    # 3. Gradle Wrapper에 실행 권한 부여
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # 4. Gradle로 빌드
     - name: Build with Gradle
       run: ./gradlew clean bootJar
 
-    # 4. Docker Hub에 로그인 (공식 로그인 액션 사용)
+    # 5. Docker Hub에 로그인 (공식 로그인 액션 사용)
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # 5. Docker 이미지를 빌드
+    # 6. Docker 이미지를 빌드
     - name: Build the Docker image
       run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1" .
 
-    # 6. Docker Hub에 푸시
+    # 7. Docker Hub에 푸시
     - name: Push Docker image to Docker Hub
       run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1"
