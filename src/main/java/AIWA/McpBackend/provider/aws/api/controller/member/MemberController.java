@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
-    private final KmsService kmsService;
+//    private final KmsService kmsService;
 
     // 회원 등록
     @PostMapping("/register")
