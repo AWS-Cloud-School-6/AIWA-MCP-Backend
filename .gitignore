@@ -22,10 +22,11 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
-*.properties
-# Ignore application.properties
-build/resources/main/application.properties
-src/main/resources/application.properties
+#*.properties
+
+## Ignore application.properties
+#build/resources/main/application.properties
+#src/main/resources/application.properties
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,intellij
