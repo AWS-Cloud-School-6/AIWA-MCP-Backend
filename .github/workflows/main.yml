@@ -1,55 +1,49 @@
-# Docker Hub에 푸시하는 워크플로우
 name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
     branches:
-      - main
+      - main 
 
-jobs:
+jobs: 
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. GitHub 저장소의 코드를 체크아웃
-      - name: Check out the repository
-        uses: actions/checkout@v4
+    # 1. GitHub 저장소의 코드를 체크아웃
+    - name: Check out the repository
+      uses: actions/checkout@v4
 
-      # 2. JDK 17 설치
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+    # 2. JDK 17 설치
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-      # 3. Gradle Wrapper에 실행 권한 부여
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+    # 3. Gradle Wrapper에 실행 권한 부여
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
-      # 4. Gradle로 빌드
-      - name: Build with Gradle
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TERRAFORM_ENDPOINT: ${{ secrets.TERRAFORM_ENDPOINT }}
-        run: ./gradlew clean bootJar
+    # 4. Gradle로 빌드
+    - name: Build with Gradle
+      run: ./gradlew clean bootJar
 
-      # 5. Docker Hub에 로그인 (공식 로그인 액션 사용)
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+    # 5. Docker Hub에 로그인 (공식 로그인 액션 사용)
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 6. Docker 이미지를 빌드
-      - name: Build the Docker image
-        run: |
-          docker build \
-            --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-            --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-            --build-arg TERRAFORM_ENDPOINT=${{ secrets.TERRAFORM_ENDPOINT }} \
-            -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1" .
+    # 6. Docker 이미지를 빌드
+    - name: Build the Docker image
+      run: docker build \          
+          --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+          --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          --build-arg TERRAFORM_ENDPOINT=${{ secrets.TERRAFORM_ENDPOINT }} \
+          -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1" .
 
-      # 7. Docker Hub에 푸시
-      - name: Push Docker image to Docker Hub
-        run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1"
+    # 7. Docker Hub에 푸시
+    - name: Push Docker image to Docker Hub
+      run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1"
