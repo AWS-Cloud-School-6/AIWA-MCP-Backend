@@ -16,7 +16,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     private final S3Service s3Service;
-    private final KmsService kmsService;
+//    private final KmsService kmsService;
 
     public Member registerMember(Member member) {
         if (memberRepository.findByEmail(member.getEmail()) != null) {
@@ -42,13 +42,13 @@ public class MemberService {
 
     public Member addOrUpdateKeys(String email,String access_key,String secret_key) {
         String encrypt_access_key, encrypt_secret_key;
-        encrypt_access_key = kmsService.encrypt(access_key);
-        encrypt_secret_key = kmsService.encrypt(secret_key);
+//        encrypt_access_key = kmsService.encrypt(access_key);
+//        encrypt_secret_key = kmsService.encrypt(secret_key);
 
         Member member = getMemberByEmail(email);
-        member.setAccess_key(encrypt_access_key);
-        member.setSecret_key(encrypt_secret_key);
-        s3Service.createTfvarsFile(email,encrypt_access_key,encrypt_secret_key);
+        member.setAccess_key(access_key);
+        member.setSecret_key(secret_key);
+        s3Service.createTfvarsFile(email,access_key,secret_key);
         return memberRepository.save(member);
     }
 
