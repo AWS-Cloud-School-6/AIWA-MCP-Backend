@@ -3,7 +3,7 @@ package AIWA.McpBackend.service.member;
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.repository.member.MemberRepository;
 import AIWA.McpBackend.service.aws.s3.S3Service;
-import AIWA.McpBackend.service.kms.KmsService;
+//import AIWA.McpBackend.service.kms.KmsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

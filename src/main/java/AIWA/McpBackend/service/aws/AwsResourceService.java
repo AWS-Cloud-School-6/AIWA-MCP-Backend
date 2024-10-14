@@ -1,7 +1,7 @@
 package AIWA.McpBackend.service.aws;
 
 import AIWA.McpBackend.entity.member.Member;
-import AIWA.McpBackend.service.kms.KmsService;
+//import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;

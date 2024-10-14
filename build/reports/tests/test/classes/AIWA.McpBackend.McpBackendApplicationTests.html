@@ -79,7 +79,7 @@
 <a name="contextLoads()"></a>
 <h3 class="failures">contextLoads()</h3>
 <span class="code">
-<pre>java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@319ea996 testClass = AIWA.McpBackend.McpBackendApplicationTests, locations = [], classes = [AIWA.McpBackend.McpBackendApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [&quot;org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true&quot;], contextCustomizers = [org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@31000e60, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@47f4e407, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@2dd80673, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@4fce136b, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@23bff419, org.springframework.boot.test.context.SpringBootTestAnnotation@3ce256e7], resourceBasePath = &quot;src/main/webapp&quot;, contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+<pre>java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@13d1653 testClass = AIWA.McpBackend.McpBackendApplicationTests, locations = [], classes = [AIWA.McpBackend.McpBackendApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [&quot;org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true&quot;], contextCustomizers = [org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@31000e60, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@47f4e407, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@2dd80673, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@4fce136b, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@23bff419, org.springframework.boot.test.context.SpringBootTestAnnotation@3ce256e7], resourceBasePath = &quot;src/main/webapp&quot;, contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
 	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191)
@@ -174,8 +174,8 @@ Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'AW
 <h2>Standard output</h2>
 <span class="code">
 <pre>Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
-10:58:58.248 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [AIWA.McpBackend.McpBackendApplicationTests]: McpBackendApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-10:58:58.307 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration AIWA.McpBackend.McpBackendApplication for test class AIWA.McpBackend.McpBackendApplicationTests
+11:05:50.017 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [AIWA.McpBackend.McpBackendApplicationTests]: McpBackendApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+11:05:50.065 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration AIWA.McpBackend.McpBackendApplication for test class AIWA.McpBackend.McpBackendApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -186,27 +186,27 @@ Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'AW
 
  :: Spring Boot ::                (v3.3.4)
 
-2024-10-14T10:58:58.475+09:00  INFO 54858 --- [    Test worker] A.McpBackend.McpBackendApplicationTests  : Starting McpBackendApplicationTests using Java 17.0.2 with PID 54858 (started by hwanghyosung in /Users/hwanghyosung/Documents/AIWA-MCP-Backend)
-2024-10-14T10:58:58.476+09:00  INFO 54858 --- [    Test worker] A.McpBackend.McpBackendApplicationTests  : No active profile set, falling back to 1 default profile: &quot;default&quot;
-2024-10-14T10:58:58.957+09:00  INFO 54858 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2024-10-14T10:58:58.985+09:00  INFO 54858 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 23 ms. Found 1 JPA repository interface.
-2024-10-14T10:58:59.319+09:00  INFO 54858 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2024-10-14T10:58:59.449+09:00  INFO 54858 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:da51686f-9325-4c6d-a8ad-d3381c24aae7 user=SA
-2024-10-14T10:58:59.450+09:00  INFO 54858 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2024-10-14T10:58:59.471+09:00  INFO 54858 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2024-10-14T10:58:59.510+09:00  INFO 54858 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
-2024-10-14T10:58:59.528+09:00  INFO 54858 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2024-10-14T10:58:59.745+09:00  INFO 54858 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2024-10-14T10:59:00.373+09:00  INFO 54858 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2024-10-14T10:59:00.390+09:00  INFO 54858 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2024-10-14T10:59:00.400+09:00  WARN 54858 --- [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 's3Config': Injection of autowired dependencies failed
-2024-10-14T10:59:00.400+09:00  INFO 54858 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2024-10-14T10:59:00.403+09:00  INFO 54858 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2024-10-14T10:59:00.405+09:00  INFO 54858 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2024-10-14T10:59:00.418+09:00  INFO 54858 --- [    Test worker] .s.b.a.l.ConditionEvaluationReportLogger : 
+2024-10-14T11:05:50.231+09:00  INFO 61643 --- [    Test worker] A.McpBackend.McpBackendApplicationTests  : Starting McpBackendApplicationTests using Java 17.0.2 with PID 61643 (started by hwanghyosung in /Users/hwanghyosung/Documents/AIWA-MCP-Backend)
+2024-10-14T11:05:50.232+09:00  INFO 61643 --- [    Test worker] A.McpBackend.McpBackendApplicationTests  : No active profile set, falling back to 1 default profile: &quot;default&quot;
+2024-10-14T11:05:50.633+09:00  INFO 61643 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-10-14T11:05:50.658+09:00  INFO 61643 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 21 ms. Found 1 JPA repository interface.
+2024-10-14T11:05:50.919+09:00  INFO 61643 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-10-14T11:05:51.001+09:00  INFO 61643 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:3e3e1561-d929-409b-a858-61a92c906e42 user=SA
+2024-10-14T11:05:51.002+09:00  INFO 61643 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-10-14T11:05:51.022+09:00  INFO 61643 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-10-14T11:05:51.045+09:00  INFO 61643 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2024-10-14T11:05:51.058+09:00  INFO 61643 --- [    Test worker] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-10-14T11:05:51.176+09:00  INFO 61643 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-10-14T11:05:51.559+09:00  INFO 61643 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-10-14T11:05:51.574+09:00  INFO 61643 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-10-14T11:05:51.581+09:00  WARN 61643 --- [    Test worker] o.s.w.c.s.GenericWebApplicationContext   : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 's3Config': Injection of autowired dependencies failed
+2024-10-14T11:05:51.581+09:00  INFO 61643 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-10-14T11:05:51.583+09:00  INFO 61643 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-10-14T11:05:51.584+09:00  INFO 61643 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-10-14T11:05:51.592+09:00  INFO 61643 --- [    Test worker] .s.b.a.l.ConditionEvaluationReportLogger : 
 
 Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2024-10-14T10:59:00.427+09:00 ERROR 54858 --- [    Test worker] o.s.boot.SpringApplication               : Application run failed
+2024-10-14T11:05:51.598+09:00 ERROR 61643 --- [    Test worker] o.s.boot.SpringApplication               : Application run failed
 
 org.springframework.beans.factory.BeanCreationException: Error creating bean with name 's3Config': Injection of autowired dependencies failed
 	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:515) ~[spring-beans-6.1.13.jar:6.1.13]
@@ -346,9 +346,9 @@ Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'AW
 	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:509) ~[spring-beans-6.1.13.jar:6.1.13]
 	... 109 common frames omitted
 
-2024-10-14T10:59:00.435+09:00  WARN 54858 --- [    Test worker] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [AIWA.McpBackend.McpBackendApplicationTests@1de398c3]
+2024-10-14T11:05:51.605+09:00  WARN 61643 --- [    Test worker] o.s.test.context.TestContextManager      : Caught exception while allowing TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] to prepare test instance [AIWA.McpBackend.McpBackendApplicationTests@3533d790]
 
-java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@319ea996 testClass = AIWA.McpBackend.McpBackendApplicationTests, locations = [], classes = [AIWA.McpBackend.McpBackendApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [&quot;org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true&quot;], contextCustomizers = [org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@31000e60, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@47f4e407, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@2dd80673, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@4fce136b, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@23bff419, org.springframework.boot.test.context.SpringBootTestAnnotation@3ce256e7], resourceBasePath = &quot;src/main/webapp&quot;, contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+java.lang.IllegalStateException: Failed to load ApplicationContext for [WebMergedContextConfiguration@13d1653 testClass = AIWA.McpBackend.McpBackendApplicationTests, locations = [], classes = [AIWA.McpBackend.McpBackendApplication], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = [&quot;org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true&quot;], contextCustomizers = [org.springframework.boot.test.autoconfigure.actuate.observability.ObservabilityContextCustomizerFactory$DisableObservabilityContextCustomizer@1f, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizer@31000e60, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@47f4e407, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@2dd80673, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@4fce136b, org.springframework.boot.test.web.reactor.netty.DisableReactorResourceFactoryGlobalResourcesContextCustomizerFactory$DisableReactorResourceFactoryGlobalResourcesContextCustomizerCustomizer@23bff419, org.springframework.boot.test.context.SpringBootTestAnnotation@3ce256e7], resourceBasePath = &quot;src/main/webapp&quot;, contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:180) ~[spring-test-6.1.13.jar:6.1.13]
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130) ~[spring-test-6.1.13.jar:6.1.13]
 	at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:191) ~[spring-test-6.1.13.jar:6.1.13]
@@ -539,7 +539,7 @@ Unconditional classes:
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 8.10.2</a> at 2024. 10. 14. 오전 10:59:00</p>
+<a href="http://www.gradle.org">Gradle 8.10.2</a> at 2024. 10. 14. 오전 11:05:51</p>
 </div>
 </div>
 </body>
