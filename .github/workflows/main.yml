@@ -38,7 +38,11 @@ jobs:
 
     # 6. Docker 이미지를 빌드
     - name: Build the Docker image
-      run: docker build -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1" .
+      run: docker build \          
+          --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+          --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          --build-arg TERRAFORM_ENDPOINT=${{ secrets.TERRAFORM_ENDPOINT }} \
+          -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1" .
 
     # 7. Docker Hub에 푸시
     - name: Push Docker image to Docker Hub
