@@ -1,11 +1,20 @@
 package AIWA.McpBackend.provider.aws.api.controller.vpc;
 
+import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcRequestDto;
+import AIWA.McpBackend.service.aws.AwsResourceService;
 import AIWA.McpBackend.service.aws.vpc.VpcService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.ec2.model.Tag;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vpc")
@@ -13,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class VpcController {
 
     private final VpcService vpcService;
+    private final AwsResourceService awsResourceService;
 
     /**
      * VPC 생성 엔드포인트
@@ -58,5 +68,23 @@ public class VpcController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("VPC 삭제 중 오류가 발생했습니다: " + e.getMessage());
         }
+    }
+
+    @GetMapping
+    public Map<String, Object> getVpc(@RequestParam String userId) {
+
+        Map<String, Object> resources = new HashMap<>();
+        awsResourceService.initializeClient(userId);
+
+        List<VpcDTO> vpcs = awsResourceService.fetchVpcs().stream()
+                .map(vpc -> {
+                    Map<String, String> tagsMap = vpc.tags() == null ? Collections.emptyMap() :
+                            vpc.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+                    return new VpcDTO(vpc.vpcId(), vpc.cidrBlock(), tagsMap);
+                })
+                .collect(Collectors.toList());
+        resources.put("vpcs", vpcs);
+
+        return resources;
     }
 }
