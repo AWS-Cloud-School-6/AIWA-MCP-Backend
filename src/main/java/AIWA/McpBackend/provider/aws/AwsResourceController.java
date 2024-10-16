@@ -1,6 +1,7 @@
 package AIWA.McpBackend.provider.aws;
 
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
+import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableDTO;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
@@ -74,8 +75,38 @@ public class AwsResourceController {
                 .collect(Collectors.toList());
         resources.put("securityGroups", securityGroups);
 
+        // Routing Tables
+        List<RouteTableDTO> routeTables = awsResourceService.fetchRouteTables().stream()
+                .map(routeTable -> {
+                    // Route 정보를 List<Map<String, String>> 형식으로 변환
+                    List<Map<String, String>> routes = routeTable.routes().stream()
+                            .map(route -> Map.of(
+                                    "destinationCidrBlock", route.destinationCidrBlock(),
+                                    "gatewayId", route.gatewayId()
+                            ))
+                            .collect(Collectors.toList());
+
+                    // Tag 정보를 Map<String, String> 형식으로 변환
+                    Map<String, String> tagsMap = routeTable.tags() == null ? Collections.emptyMap() :
+                            routeTable.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    // associations에서 첫 번째 association을 가져오고 VPC ID 가져오기
+                    String vpcId = null;
+                    if (!routeTable.associations().isEmpty()) {
+                        String subnetId = routeTable.associations().get(0).subnetId(); // 서브넷 ID 가져오기
+                        if (subnetId != null && !subnetId.isEmpty()) { // 서브넷 ID가 유효한 경우
+                            vpcId = awsResourceService.getVpcIdFromSubnet(subnetId); // 서브넷 ID로 VPC ID 가져오기
+                        } else {
+                            // 서브넷 ID가 유효하지 않은 경우 로그를 남기거나 다른 처리를 할 수 있습니다.
+                            System.out.println("Invalid subnet ID found in route table associations for route table ID: " + routeTable.routeTableId());
+                        }
+                    }
+
+                    return new RouteTableDTO(routeTable.routeTableId(), vpcId, routes, tagsMap);
+                })
+                .collect(Collectors.toList());
+        resources.put("routeTables", routeTables); // 라우팅 테이블 추가
+
         return resources; // 자동으로 JSON 형식으로 변환되어 응답
     }
-
-
 }
