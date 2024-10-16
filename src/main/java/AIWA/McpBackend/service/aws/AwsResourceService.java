@@ -53,6 +53,12 @@ public class AwsResourceService {
         return response.vpcs();
     }
 
+    public List<RouteTable> fetchRouteTables() {
+        DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
+        DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
+        return response.routeTables();
+    }
+
     public List<Subnet> fetchSubnets() {
         DescribeSubnetsRequest request = DescribeSubnetsRequest.builder().build();
         DescribeSubnetsResponse response = ec2Client.describeSubnets(request);
@@ -63,5 +69,17 @@ public class AwsResourceService {
         DescribeSecurityGroupsRequest request = DescribeSecurityGroupsRequest.builder().build();
         DescribeSecurityGroupsResponse response = ec2Client.describeSecurityGroups(request);
         return response.securityGroups();
+    }
+
+
+    public String getVpcIdFromSubnet(String subnetId) {
+        DescribeSubnetsRequest request = DescribeSubnetsRequest.builder()
+                .subnetIds(subnetId)
+                .build();
+        DescribeSubnetsResponse response = ec2Client.describeSubnets(request);
+        return response.subnets().stream()
+                .findFirst()
+                .map(Subnet::vpcId)
+                .orElse(null);
     }
 }
