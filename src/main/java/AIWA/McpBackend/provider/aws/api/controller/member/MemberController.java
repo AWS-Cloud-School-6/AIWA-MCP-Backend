@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
-//    private final KmsService kmsService;
 
     // 회원 등록
     @PostMapping("/register")
@@ -32,7 +31,7 @@ public class MemberController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Member>> getAllMembers() {
         List<Member> members = memberService.getAllMembers();
         return ResponseEntity.ok(members); // HTTP 200 OK와 함께 members 리스트 반환
