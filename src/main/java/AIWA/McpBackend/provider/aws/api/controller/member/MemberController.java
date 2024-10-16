@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
@@ -30,6 +32,11 @@ public class MemberController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping
+    public ResponseEntity<List<Member>> getAllMembers() {
+        List<Member> members = memberService.getAllMembers();
+        return ResponseEntity.ok(members); // HTTP 200 OK와 함께 members 리스트 반환
+    }
 
     @PostMapping("/update-credentials")
     public ResponseEntity<String> updateCredentials(@RequestBody MemberCredentialDTO memberCredentialDto) {
