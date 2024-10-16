@@ -31,7 +31,10 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TERRAFORM_ENDPOINT: ${{ secrets.TERRAFORM_ENDPOINT }}
+          TERRAFORM_HOST: ${{ secrets.TERRAFORM_HOST }}
+          TERRAFORM_PORT: ${{ secrets.TERRAFORM_PORT }}
+          TERRAFORM_USERNAME: ${{ secrets.TERRAFORM_USERNAME }}
+          TERRAFORM_PRIVATE_KEY_PATH: ${{ secrets.TERRAFORM_PRIVATE_KEY_PATH }}
         run: ./gradlew clean bootJar
 
       # 5. Docker Hub에 로그인 (공식 로그인 액션 사용)
@@ -47,7 +50,10 @@ jobs:
           docker build \
             --build-arg AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             --build-arg AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-            --build-arg TERRAFORM_ENDPOINT=${{ secrets.TERRAFORM_ENDPOINT }} \
+            --build-arg TERRAFORM_HOST=${{ secrets.TERRAFORM_HOST }} \
+            --build-arg TERRAFORM_PORT=${{ secrets.TERRAFORM_PORT }} \
+            --build-arg TERRAFORM_USERNAME=${{ secrets.TERRAFORM_USERNAME }} \
+            --build-arg TERRAFORM_PRIVATE_KEY_PATH=${{ secrets.TERRAFORM_PRIVATE_KEY_PATH }} \
             -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1" .
 
       # 7. Docker Hub에 푸시
