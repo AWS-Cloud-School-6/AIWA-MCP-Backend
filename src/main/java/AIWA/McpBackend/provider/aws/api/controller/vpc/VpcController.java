@@ -41,35 +41,35 @@ public class VpcController {
         try {
             vpcService.createVpc(vpcRequest, userId);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(vpcRequest.getVpcName() + " VPC saeng sung sung gong.");
+                    .body(vpcRequest.getVpcId() + " VPC saeng sung sung gong.");
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(vpcRequest.getVpcName() + " VPC sil pae: " + e.getMessage());
+                    .body(vpcRequest.getVpcId() + " VPC sil pae: " + e.getMessage());
         }
     }
 
     /**
      * VPC 삭제 엔드포인트
      *
-     * @param vpcName VPC 이름 (요청 파라미터로 전달)
+     * @param vpcId VPC 이름 (요청 파라미터로 전달)
      * @param userId  사용자 ID (요청 파라미터로 전달)
      * @return 삭제 성공 메시지 또는 오류 메시지
      */
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteVpc(
-            @RequestParam String vpcName,
+            @RequestParam String vpcId,
             @RequestParam String userId) {
         try {
-            vpcService.deleteVpc(vpcName, userId);
+            vpcService.deleteVpc(vpcId, userId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(vpcName + " VPC sak jae sung gong.");
+                    .body(vpcId + " VPC sak jae sung gong.");
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(vpcName + " VPC sak jae sil pae: " + e.getMessage());
+                    .body(vpcId + " VPC sak jae sil pae: " + e.getMessage());
         }
     }
 

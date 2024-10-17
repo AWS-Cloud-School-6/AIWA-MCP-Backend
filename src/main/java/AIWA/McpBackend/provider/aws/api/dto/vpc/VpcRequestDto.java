@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class VpcRequestDto {
 
-    private String vpcName;
+    private String vpcId;
     private String cidrBlock;
     // 필요한 추가 필드들 (예: 태그 등)
 
