@@ -53,23 +53,23 @@ public class VpcController {
     /**
      * VPC 삭제 엔드포인트
      *
-     * @param vpcId VPC 이름 (요청 파라미터로 전달)
+     * @param vpcName VPC 이름 (요청 파라미터로 전달)
      * @param userId  사용자 ID (요청 파라미터로 전달)
      * @return 삭제 성공 메시지 또는 오류 메시지
      */
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteVpc(
-            @RequestParam String vpcId,
+            @RequestParam String vpcName,
             @RequestParam String userId) {
         try {
-            vpcService.deleteVpc(vpcId, userId);
+            vpcService.deleteVpc(vpcName, userId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(vpcId + " VPC sak jae sung gong.");
+                    .body(vpcName + " VPC sak jae sung gong.");
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(vpcId + " VPC sak jae sil pae: " + e.getMessage());
+                    .body(vpcName + " VPC sak jae sil pae: " + e.getMessage());
         }
     }
 
