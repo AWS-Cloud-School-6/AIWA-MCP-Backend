@@ -41,12 +41,12 @@ public class VpcController {
         try {
             vpcService.createVpc(vpcRequest, userId);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(vpcRequest.getVpcId() + " VPC saeng sung sung gong.");
+                    .body(vpcRequest.getVpcName() + " VPC saeng sung sung gong.");
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(vpcRequest.getVpcId() + " VPC sil pae: " + e.getMessage());
+                    .body(vpcRequest.getVpcName() + " VPC sil pae: " + e.getMessage());
         }
     }
 

@@ -30,10 +30,10 @@ public class VpcService {
                     Name = "%s"
                   }
                 }
-                """, vpcRequest.getVpcId(), vpcRequest.getCidrBlock(), vpcRequest.getVpcId());
+                """, vpcRequest.getVpcName(), vpcRequest.getCidrBlock(), vpcRequest.getVpcName());
 
         // 2. VPC .tf 파일 이름 설정 (예: vpc_myVPC.tf)
-        String vpcTfFileName = String.format("vpc_%s.tf", vpcRequest.getVpcId());
+        String vpcTfFileName = String.format("vpc_%s.tf", vpcRequest.getVpcName());
 
         // 3. 콘솔에 내용 출력 (디버깅 용도)
         System.out.println(vpcTfContent);
