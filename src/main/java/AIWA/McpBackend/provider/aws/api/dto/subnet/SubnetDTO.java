@@ -11,12 +11,14 @@ public class SubnetDTO {
     private final String cidr;
     private final String vpcId;
     private final Map<String, String> tags;
+    private final String availabilityZone;
 
-    public SubnetDTO(String subnetId, String cidr, String vpcId, Map<String, String> tags) {
+    public SubnetDTO(String subnetId, String cidr, String vpcId, Map<String, String> tags, String availabilityZone) {
         this.subnetId = subnetId;
         this.cidr = cidr;
         this.vpcId = vpcId;
         this.tags = tags;
+        this.availabilityZone = availabilityZone;
     }
 
 }
