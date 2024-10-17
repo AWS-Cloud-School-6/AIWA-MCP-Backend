@@ -24,11 +24,14 @@ public class MemberController {
     }
 
     // 특정 회원 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable Long id) {
-        return memberService.getMemberById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/")
+    public ResponseEntity<Member> getMember(@RequestParam String email) {
+        Member member = memberService.getMemberByEmail(email);  // 이 메서드가 Optional을 반환하지 않는다고 가정
+        if (member != null) {
+            return ResponseEntity.ok(member);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/all")
@@ -41,9 +44,7 @@ public class MemberController {
     public ResponseEntity<String> updateCredentials(@RequestBody MemberCredentialDTO memberCredentialDto) {
 
         memberService.addOrUpdateKeys(memberCredentialDto.getEmail(), memberCredentialDto.getAccess_key(), memberCredentialDto.getSecret_key());
-        return ResponseEntity.ok("자격 증명이 업데이트되었습니다.");
+        return ResponseEntity.ok("update wan.");
     }
-
-
 
 }
