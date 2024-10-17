@@ -41,12 +41,12 @@ public class VpcController {
         try {
             vpcService.createVpc(vpcRequest, userId);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("VPC 생성 요청이 성공적으로 처리되었습니다.");
+                    .body(vpcRequest.getVpcName() + " VPC saeng sung sung gong.");
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("VPC 생성 중 오류가 발생했습니다: " + e.getMessage());
+                    .body(vpcRequest.getVpcName() + " VPC sil pae: " + e.getMessage());
         }
     }
 
@@ -64,17 +64,17 @@ public class VpcController {
         try {
             vpcService.deleteVpc(vpcName, userId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body("VPC 삭제 요청이 성공적으로 처리되었습니다.");
+                    .body(vpcName + " VPC sak jae sung gong.");
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("VPC 삭제 중 오류가 발생했습니다: " + e.getMessage());
+                    .body(vpcName + " VPC sak jae sil pae: " + e.getMessage());
         }
     }
 
-    @GetMapping("/")
-    public Map<String, Object> getVpc(@RequestParam String userId) {
+    @GetMapping("/describe")
+    public Map<String, Object> describeVpc(@RequestParam String userId) {
 
         Map<String, Object> resources = new HashMap<>();
         awsResourceService.initializeClient(userId);
