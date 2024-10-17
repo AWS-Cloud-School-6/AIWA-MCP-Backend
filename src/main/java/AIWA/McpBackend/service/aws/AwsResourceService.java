@@ -77,7 +77,7 @@ public class AwsResourceService {
                 .map(subnet -> {
                     Map<String, String> tagsMap = subnet.tags() == null ? Collections.emptyMap() :
                             subnet.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
-                    return new SubnetDTO(subnet.subnetId(), subnet.cidrBlock(), subnet.vpcId(), tagsMap);
+                    return new SubnetDTO(subnet.subnetId(), subnet.cidrBlock(), subnet.vpcId(), tagsMap, subnet.availabilityZone());
                 })
                 .collect(Collectors.toList());
     }
