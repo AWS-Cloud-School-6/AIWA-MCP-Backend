@@ -9,10 +9,10 @@ import java.util.Map;
 public class RouteTableDTO {
     private String routeTableId;
     private String vpcId;
-    private List<Map<String, String>> routes;
+    private List<RouteDTO> routes;
     private Map<String, String> tags;
 
-    public RouteTableDTO(String routeTableId, String vpcId, List<Map<String, String>> routes, Map<String, String> tags) {
+    public RouteTableDTO(String routeTableId, String vpcId, List<RouteDTO> routes, Map<String, String> tags) {
         this.routeTableId = routeTableId;
         this.vpcId = vpcId;
         this.routes = routes;
@@ -20,4 +20,6 @@ public class RouteTableDTO {
     }
 
     // Getters and Setters
+
 }
+

@@ -1,5 +1,8 @@
 package AIWA.McpBackend.provider.aws.api.controller.vpc;
 
+import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
+import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableDTO;
+import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcRequestDto;
 import AIWA.McpBackend.service.aws.AwsResourceService;
@@ -70,19 +73,20 @@ public class VpcController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/")
     public Map<String, Object> getVpc(@RequestParam String userId) {
 
         Map<String, Object> resources = new HashMap<>();
         awsResourceService.initializeClient(userId);
 
-        List<VpcDTO> vpcs = awsResourceService.fetchVpcs().stream()
-                .map(vpc -> {
-                    Map<String, String> tagsMap = vpc.tags() == null ? Collections.emptyMap() :
-                            vpc.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
-                    return new VpcDTO(vpc.vpcId(), vpc.cidrBlock(), tagsMap);
-                })
-                .collect(Collectors.toList());
+        // Subnets
+        List<SubnetDTO> subnets = awsResourceService.fetchSubnets();
+
+        // Route Tables
+        List<RouteTableDTO> routeTables = awsResourceService.fetchRouteTables();
+
+        // VPCs - 서브넷 및 라우팅 테이블 정보 전달
+        List<VpcDTO> vpcs = awsResourceService.fetchVpcs(subnets, routeTables);
         resources.put("vpcs", vpcs);
 
         return resources;
