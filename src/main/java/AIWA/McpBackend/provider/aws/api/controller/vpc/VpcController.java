@@ -23,7 +23,6 @@ public class VpcController {
 
     private final VpcService vpcService;
     private final AwsResourceService awsResourceService;
-
     private final ResponseService responseService;
 
     /**

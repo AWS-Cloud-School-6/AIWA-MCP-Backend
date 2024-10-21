@@ -41,9 +41,6 @@ public class MemberService {
 
 
     public Member addOrUpdateKeys(String email,String access_key,String secret_key) {
-        String encrypt_access_key, encrypt_secret_key;
-//        encrypt_access_key = kmsService.encrypt(access_key);
-//        encrypt_secret_key = kmsService.encrypt(secret_key);
 
         Member member = getMemberByEmail(email);
         member.setAccess_key(access_key);
