@@ -3,48 +3,58 @@ package AIWA.McpBackend.provider.aws.api.controller.member;
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberCredentialDTO;
 //import AIWA.McpBackend.service.kms.KmsService;
+import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberRequestDto;
+import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberResponseDto;
+import AIWA.McpBackend.provider.response.CommonResult;
+import AIWA.McpBackend.provider.response.ListResult;
+import AIWA.McpBackend.provider.response.SingleResult;
 import AIWA.McpBackend.service.member.MemberService;
+import AIWA.McpBackend.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
+    private final ResponseService responseService;
 
     // 회원 등록
     @PostMapping("/register")
-    public ResponseEntity<Member> registerMember(@RequestBody Member member) {
-        Member savedMember = memberService.registerMember(member);
-        return ResponseEntity.ok(savedMember);
+    public SingleResult<MemberResponseDto> registerMember(@RequestBody MemberRequestDto memberRequestDto) {
+        Member savedMember = memberService.registerMember(memberRequestDto);
+        MemberResponseDto memberResponseDto = MemberResponseDto.toDto(savedMember);
+        return responseService.getSingleResult(memberResponseDto);
     }
 
     // 특정 회원 조회
     @GetMapping("/")
-    public ResponseEntity<Member> getMember(@RequestParam String email) {
-        Member member = memberService.getMemberByEmail(email);  // 이 메서드가 Optional을 반환하지 않는다고 가정
-        if (member != null) {
-            return ResponseEntity.ok(member);
+    public SingleResult<MemberResponseDto> getMember(@RequestParam String email) {
+        Member findMember = memberService.getMemberByEmail(email);  // 이 메서드가 Optional을 반환하지 않는다고 가정
+        MemberResponseDto memberResponseDto = MemberResponseDto.toDto(findMember);
+        if (findMember != null) {
+            return responseService.getSingleResult(memberResponseDto);
         } else {
-            return ResponseEntity.notFound().build();
+            return (SingleResult<MemberResponseDto>) responseService.getFailResult();
         }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Member>> getAllMembers() {
+    public ListResult<MemberResponseDto> getAllMembers() {
         List<Member> members = memberService.getAllMembers();
-        return ResponseEntity.ok(members); // HTTP 200 OK와 함께 members 리스트 반환
+        List<MemberResponseDto> memberResponseDtoList = members.stream().map(MemberResponseDto::toDto).collect(Collectors.toList());
+        return responseService.getListResult(memberResponseDtoList);
     }
 
     @PostMapping("/update-credentials")
-    public ResponseEntity<String> updateCredentials(@RequestBody MemberCredentialDTO memberCredentialDto) {
-
-        memberService.addOrUpdateKeys(memberCredentialDto.getEmail(), memberCredentialDto.getAccess_key(), memberCredentialDto.getSecret_key());
-        return ResponseEntity.ok("update wan.");
+    public CommonResult updateCredentials(@RequestBody MemberCredentialDTO memberCredentialDto) {
+        memberService.addOrUpdateKeys(memberCredentialDto.email(), memberCredentialDto.access_key(), memberCredentialDto.secret_key());
+        return responseService.getSuccessResult();
     }
 
 }
