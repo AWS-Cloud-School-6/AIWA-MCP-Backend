@@ -22,7 +22,7 @@ public class MemberService {
             throw new RuntimeException("Email already exists");
         }
         s3Service.createUserDirectory(memberRequestDto.getEmail());
-        Member regiMember=new Member(memberRequestDto.name(), memberRequestDto.password(), memberRequestDto.getEmail());
+        Member regiMember=new Member(memberRequestDto.getName(), memberRequestDto.getPassword(), memberRequestDto.getEmail());
         return memberRepository.save(regiMember);
     }
 

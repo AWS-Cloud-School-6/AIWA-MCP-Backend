@@ -53,7 +53,7 @@ public class MemberController {
 
     @PostMapping("/update-credentials")
     public CommonResult updateCredentials(@RequestBody MemberCredentialDTO memberCredentialDto) {
-        memberService.addOrUpdateKeys(memberCredentialDto.email(), memberCredentialDto.access_key(), memberCredentialDto.secret_key());
+        memberService.addOrUpdateKeys(memberCredentialDto.getEmail(),memberCredentialDto.getAccessKey(), memberCredentialDto.getSecretKey());
         return responseService.getSuccessResult();
     }
 
