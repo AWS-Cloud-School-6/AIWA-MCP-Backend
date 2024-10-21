@@ -3,6 +3,7 @@ package AIWA.McpBackend.service.aws;
 import AIWA.McpBackend.entity.member.Member;
 //import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
+import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
@@ -132,4 +133,24 @@ public class AwsResourceService {
                 .collect(Collectors.toList());
     }
 
+
+    public List<InternetGatewayDto> fetchInternetGateways() {
+        DescribeInternetGatewaysRequest request = DescribeInternetGatewaysRequest.builder().build();
+        DescribeInternetGatewaysResponse response = ec2Client.describeInternetGateways(request);
+
+        return response.internetGateways().stream()
+                .map(internetGateway -> {
+                    // 태그를 맵으로 변환
+                    Map<String, String> tagsMap = internetGateway.tags() == null ? Collections.emptyMap() :
+                            internetGateway.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    // Attachments의 정보를 적절하게 변환
+                    List<InternetGatewayDto.Attachment> attachments = internetGateway.attachments().stream()
+                            .map(attachment -> new InternetGatewayDto.Attachment(attachment.vpcId(), attachment.stateAsString())) // 상태를 문자열로 변환
+                            .collect(Collectors.toList());
+
+                    return new InternetGatewayDto(internetGateway.internetGatewayId(), tagsMap, attachments);
+                })
+                .collect(Collectors.toList());
+    }
 }

@@ -53,6 +53,8 @@ public class MemberController {
 
     @PostMapping("/update-credentials")
     public CommonResult updateCredentials(@RequestBody MemberCredentialDTO memberCredentialDto) {
+        System.out.println(memberCredentialDto.getAccessKey());
+        System.out.println(memberCredentialDto.getSecretKey());
         memberService.addOrUpdateKeys(memberCredentialDto.getEmail(),memberCredentialDto.getAccessKey(), memberCredentialDto.getSecretKey());
         return responseService.getSuccessResult();
     }
