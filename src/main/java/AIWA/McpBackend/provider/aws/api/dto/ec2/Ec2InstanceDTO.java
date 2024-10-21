@@ -6,7 +6,7 @@ import lombok.Getter;
 
 import java.util.Map;
 
-@Data
+@Getter
 public record Ec2InstanceDTO(String instanceId, String state, Map<String, String> tags) {
 
 }

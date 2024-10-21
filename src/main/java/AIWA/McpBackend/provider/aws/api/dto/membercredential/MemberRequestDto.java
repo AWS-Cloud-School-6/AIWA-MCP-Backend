@@ -1,8 +1,9 @@
 package AIWA.McpBackend.provider.aws.api.dto.membercredential;
 
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public record MemberRequestDto(String name, String password, String email) {
 
 }

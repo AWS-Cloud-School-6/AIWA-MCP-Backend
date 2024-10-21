@@ -1,10 +1,11 @@
 package AIWA.McpBackend.provider.aws.api.dto.ec2;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.Map;
 
-@Data
+@Getter
 public class Ec2RequestDto {
     private String instanceName;    // EC2 인스턴스 이름
     private String instanceType;    // EC2 인스턴스 타입 (예: t2.micro)
