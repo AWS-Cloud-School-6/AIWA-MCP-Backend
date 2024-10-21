@@ -2,8 +2,12 @@ package AIWA.McpBackend.provider.aws.api.controller.subnet;
 
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetRequestDto;
+import AIWA.McpBackend.provider.response.CommonResult;
+import AIWA.McpBackend.provider.response.ListResult;
 import AIWA.McpBackend.service.aws.AwsResourceService;
 import AIWA.McpBackend.service.aws.subnet.SubnetService;
+import AIWA.McpBackend.service.response.ResponseService;
+import com.amazonaws.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,39 +22,36 @@ public class SubnetController {
 
     private final SubnetService subnetService;
     private final AwsResourceService awsResourceService;
+    private final ResponseService responseService;
 
     @PostMapping("/create")
-    public String createSubnet(@RequestBody SubnetRequestDto subnetRequest, @RequestParam String userId) {
+    public CommonResult createSubnet(@RequestBody SubnetRequestDto subnetRequest, @RequestParam String userId) {
         try {
             subnetService.createSubnet(subnetRequest, userId);
-            return "Subnet 생성 요청이 성공적으로 처리되었습니다.";
+            return responseService.getSuccessResult();
         } catch (Exception e) {
             e.printStackTrace();
-            return "Subnet 생성 중 오류가 발생했습니다: " + e.getMessage();
+            return responseService.getFailResult();
         }
     }
 
     @DeleteMapping("/delete")
-    public String deleteSubnet(@RequestParam String subnetName, @RequestParam String userId) {
+    public CommonResult deleteSubnet(@RequestParam String subnetName, @RequestParam String userId) {
         try {
             subnetService.deleteSubnet(subnetName, userId);
-            return "Subnet 삭제 요청이 성공적으로 처리되었습니다.";
+            return responseService.getSuccessResult();
         } catch (Exception e) {
             e.printStackTrace();
-            return "Subnet 삭제 중 오류가 발생했습니다: " + e.getMessage();
+            return responseService.getFailResult();
         }
     }
 
     @GetMapping("/describe")
-    public Map<String,Object> describeSubnet(@RequestParam String userId) {
+    public ListResult<SubnetResponseDto> describeSubnet(@RequestParam String userId) {
 
-        Map<String,Object> resources = new HashMap<>();
         awsResourceService.initializeClient(userId);
-
         List<SubnetResponseDto> subnets = awsResourceService.fetchSubnets();
-        resources.put("subnets", subnets);
 
-        return resources;
-
+        return responseService.getListResult(subnets);
     }
 }
