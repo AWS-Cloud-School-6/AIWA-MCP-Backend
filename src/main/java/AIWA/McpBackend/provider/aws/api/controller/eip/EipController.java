@@ -1,7 +1,9 @@
 package AIWA.McpBackend.provider.aws.api.controller.eip;
 
 import AIWA.McpBackend.provider.aws.api.dto.eip.EipRequestDto;
+import AIWA.McpBackend.provider.response.CommonResult;
 import AIWA.McpBackend.service.aws.eip.EipService;
+import AIWA.McpBackend.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ public class EipController {
 
     private final EipService eipService;
 
+    private final ResponseService responseService;
+
     /**
      * EIP 생성 엔드포인트
      *
@@ -24,14 +28,13 @@ public class EipController {
      * @return 성공 또는 오류 메시지
      */
     @PostMapping("/create")
-    public ResponseEntity<String> createEip(@RequestBody EipRequestDto eipRequestDto) {
+    public CommonResult createEip(@RequestBody EipRequestDto eipRequestDto) {
         try {
             eipService.createEip(eipRequestDto.getUserId(), eipRequestDto.getInstanceId());
-            return ResponseEntity.ok("EIP 생성 요청이 성공적으로 처리되었습니다.");
+            return responseService.getSuccessResult();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("EIP 생성 중 오류가 발생했습니다: " + e.getMessage());
+            return responseService.getFailResult();
         }
     }
 
@@ -42,14 +45,13 @@ public class EipController {
      * @return 성공 또는 오류 메시지
      */
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteEip(@RequestBody EipRequestDto eipRequestDto) {
+    public CommonResult deleteEip(@RequestBody EipRequestDto eipRequestDto) {
         try {
             eipService.deleteEip(eipRequestDto.getUserId(), eipRequestDto.getEipId());
-            return ResponseEntity.ok("EIP 삭제 요청이 성공적으로 처리되었습니다.");
+            return responseService.getSuccessResult();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("EIP 삭제 중 오류가 발생했습니다: " + e.getMessage());
+            return responseService.getFailResult();
         }
     }
 }

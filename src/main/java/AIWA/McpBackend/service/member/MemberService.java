@@ -1,6 +1,7 @@
 package AIWA.McpBackend.service.member;
 
 import AIWA.McpBackend.entity.member.Member;
+import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberRequestDto;
 import AIWA.McpBackend.repository.member.MemberRepository;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 //import AIWA.McpBackend.service.kms.KmsService;
@@ -14,16 +15,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
     private final S3Service s3Service;
-//    private final KmsService kmsService;
 
-    public Member registerMember(Member member) {
-        if (memberRepository.findByEmail(member.getEmail()) != null) {
+    public Member registerMember(MemberRequestDto memberRequestDto) {
+        if (memberRepository.findByEmail(memberRequestDto.getEmail()) != null) {
             throw new RuntimeException("Email already exists");
         }
-        s3Service.createUserDirectory(member.getEmail());
-        return memberRepository.save(member);
+        s3Service.createUserDirectory(memberRequestDto.getEmail());
+        Member regiMember=new Member(memberRequestDto.name(), memberRequestDto.password(), memberRequestDto.getEmail());
+        return memberRepository.save(regiMember);
     }
 
     // 특정 회원 조회

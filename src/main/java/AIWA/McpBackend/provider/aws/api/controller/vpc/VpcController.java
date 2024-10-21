@@ -1,23 +1,20 @@
 package AIWA.McpBackend.provider.aws.api.controller.vpc;
 
-import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
-import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableDTO;
-import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
-import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
+import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
+import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetResponseDto;
+import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcTotalResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcRequestDto;
+import AIWA.McpBackend.provider.response.CommonResult;
+import AIWA.McpBackend.provider.response.ListResult;
 import AIWA.McpBackend.service.aws.AwsResourceService;
 import AIWA.McpBackend.service.aws.vpc.VpcService;
+import AIWA.McpBackend.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import software.amazon.awssdk.services.ec2.model.Tag;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vpc")
@@ -27,6 +24,8 @@ public class VpcController {
     private final VpcService vpcService;
     private final AwsResourceService awsResourceService;
 
+    private final ResponseService responseService;
+
     /**
      * VPC 생성 엔드포인트
      *
@@ -35,18 +34,16 @@ public class VpcController {
      * @return 생성 성공 메시지 또는 오류 메시지
      */
     @PostMapping("/create")
-    public ResponseEntity<String> createVpc(
+    public CommonResult createVpc(
             @RequestBody VpcRequestDto vpcRequest,
             @RequestParam String userId) {
         try {
             vpcService.createVpc(vpcRequest, userId);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(vpcRequest.getVpcName() + " VPC saeng sung sung gong.");
+            return responseService.getSuccessResult();
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(vpcRequest.getVpcName() + " VPC sil pae: " + e.getMessage());
+            return responseService.getFailResult();
         }
     }
 
@@ -58,37 +55,34 @@ public class VpcController {
      * @return 삭제 성공 메시지 또는 오류 메시지
      */
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteVpc(
+    public CommonResult deleteVpc(
             @RequestParam String vpcName,
             @RequestParam String userId) {
         try {
             vpcService.deleteVpc(vpcName, userId);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(vpcName + " VPC sak jae sung gong.");
+            return responseService.getSuccessResult();
         } catch (Exception e) {
             // 예외 로그 기록 (추가적인 로깅 프레임워크 사용 권장)
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(vpcName + " VPC sak jae sil pae: " + e.getMessage());
+            return responseService.getFailResult();
         }
     }
 
     @GetMapping("/describe")
-    public Map<String, Object> describeVpc(@RequestParam String userId) {
+    public ListResult<VpcTotalResponseDto> describeVpc(@RequestParam String userId) {
 
         Map<String, Object> resources = new HashMap<>();
         awsResourceService.initializeClient(userId);
 
         // Subnets
-        List<SubnetDTO> subnets = awsResourceService.fetchSubnets();
+        List<SubnetResponseDto> subnets = awsResourceService.fetchSubnets();
 
         // Route Tables
-        List<RouteTableDTO> routeTables = awsResourceService.fetchRouteTables();
+        List<RouteTableResponseDto> routeTables = awsResourceService.fetchRouteTables();
 
         // VPCs - 서브넷 및 라우팅 테이블 정보 전달
-        List<VpcDTO> vpcs = awsResourceService.fetchVpcs(subnets, routeTables);
-        resources.put("vpcs", vpcs);
+        List<VpcTotalResponseDto> vpcs = awsResourceService.fetchVpcs(subnets, routeTables);
 
-        return resources;
+        return responseService.getListResult(vpcs);
     }
 }
