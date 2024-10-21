@@ -1,6 +1,6 @@
 package AIWA.McpBackend.provider.aws.api.controller.subnet;
 
-import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
+import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetRequestDto;
 import AIWA.McpBackend.service.aws.AwsResourceService;
 import AIWA.McpBackend.service.aws.subnet.SubnetService;
@@ -47,7 +47,7 @@ public class SubnetController {
         Map<String,Object> resources = new HashMap<>();
         awsResourceService.initializeClient(userId);
 
-        List<SubnetDTO> subnets = awsResourceService.fetchSubnets();
+        List<SubnetResponseDto> subnets = awsResourceService.fetchSubnets();
         resources.put("subnets", subnets);
 
         return resources;

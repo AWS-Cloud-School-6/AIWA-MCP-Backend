@@ -4,10 +4,10 @@ import AIWA.McpBackend.entity.member.Member;
 //import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
-import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableDTO;
+import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
-import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetDTO;
-import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcDTO;
+import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetResponseDto;
+import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcTotalResponseDto;
 import AIWA.McpBackend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -15,9 +15,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.kms.KmsClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,20 +68,20 @@ public class AwsResourceService {
     }
 
     // Subnets 가져오기
-    public List<SubnetDTO> fetchSubnets() {
+    public List<SubnetResponseDto> fetchSubnets() {
         DescribeSubnetsRequest request = DescribeSubnetsRequest.builder().build();
         DescribeSubnetsResponse response = ec2Client.describeSubnets(request);
         return response.subnets().stream()
                 .map(subnet -> {
                     Map<String, String> tagsMap = subnet.tags() == null ? Collections.emptyMap() :
                             subnet.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
-                    return new SubnetDTO(subnet.subnetId(), subnet.cidrBlock(), subnet.vpcId(), tagsMap, subnet.availabilityZone());
+                    return new SubnetResponseDto(subnet.subnetId(), subnet.cidrBlock(), subnet.vpcId(), tagsMap, subnet.availabilityZone());
                 })
                 .collect(Collectors.toList());
     }
 
     // Route Tables 가져오기
-    public List<RouteTableDTO> fetchRouteTables() {
+    public List<RouteTableResponseDto> fetchRouteTables() {
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
         return response.routeTables().stream()
@@ -93,13 +91,13 @@ public class AwsResourceService {
                     List<RouteDTO> routes = routeTable.routes().stream()
                             .map(route -> new RouteDTO(route.gatewayId(), route.destinationCidrBlock()))
                             .collect(Collectors.toList());
-                    return new RouteTableDTO(routeTable.routeTableId(), routeTable.vpcId(), routes, tagsMap);
+                    return new RouteTableResponseDto(routeTable.routeTableId(), routeTable.vpcId(), routes, tagsMap);
                 })
                 .collect(Collectors.toList());
     }
 
     // VPCs 가져오기
-    public List<VpcDTO> fetchVpcs(List<SubnetDTO> subnets, List<RouteTableDTO> routeTables) {
+    public List<VpcTotalResponseDto> fetchVpcs(List<SubnetResponseDto> subnets, List<RouteTableResponseDto> routeTables) {
         DescribeVpcsRequest request = DescribeVpcsRequest.builder().build();
         DescribeVpcsResponse response = ec2Client.describeVpcs(request);
 
@@ -108,15 +106,15 @@ public class AwsResourceService {
                     Map<String, String> tagsMap = vpc.tags() == null ? Collections.emptyMap() :
                             vpc.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
 
-                    List<SubnetDTO> associatedSubnets = subnets.stream()
+                    List<SubnetResponseDto> associatedSubnets = subnets.stream()
                             .filter(subnet -> subnet.getVpcId().equals(vpc.vpcId()))
                             .collect(Collectors.toList());
 
-                    List<RouteTableDTO> associatedRouteTables = routeTables.stream()
+                    List<RouteTableResponseDto> associatedRouteTables = routeTables.stream()
                             .filter(routeTable -> routeTable.getVpcId().equals(vpc.vpcId()))
                             .collect(Collectors.toList());
 
-                    return new VpcDTO(vpc.vpcId(), vpc.cidrBlock(), tagsMap, associatedSubnets, associatedRouteTables);
+                    return new VpcTotalResponseDto(vpc.vpcId(), vpc.cidrBlock(), tagsMap, associatedSubnets, associatedRouteTables);
                 })
                 .collect(Collectors.toList());
     }
