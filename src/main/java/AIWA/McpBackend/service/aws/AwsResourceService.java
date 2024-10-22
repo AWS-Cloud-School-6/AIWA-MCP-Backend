@@ -21,10 +21,7 @@ import software.amazon.awssdk.services.ec2.Ec2Client;
 import software.amazon.awssdk.services.ec2.model.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -175,16 +172,48 @@ public class AwsResourceService {
         DescribeNatGatewaysRequest request = DescribeNatGatewaysRequest.builder().build();
         DescribeNatGatewaysResponse response = ec2Client.describeNatGateways(request);
 
+        // ENI 정보를 가져옵니다.
+        List<NetworkInterfaceDto> networkInterfaces = fetchNetworkInterfaces(userId);
+        Map<String, List<NetworkInterfaceDto>> natGatewayEniMap = new HashMap<>();
+
+        // NAT Gateway와 연결된 ENI 정보를 매핑합니다.
+        for (NetworkInterfaceDto eni : networkInterfaces) {
+            for (var natGateway : response.natGateways()) {
+                for (var address : natGateway.natGatewayAddresses()) {
+                    if (address.networkInterfaceId() != null && address.networkInterfaceId().equals(eni.getNetworkInterfaceId())) {
+                        natGatewayEniMap
+                                .computeIfAbsent(natGateway.natGatewayId(), k -> new ArrayList<>())
+                                .add(eni);
+                    }
+                }
+            }
+        }
+
         return response.natGateways().stream()
                 .map(natGateway -> {
-                    // 태그를 맵으로 변환
                     Map<String, String> tagsMap = natGateway.tags() == null ? Collections.emptyMap() :
                             natGateway.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
 
-                    return new NatGatewayDto(natGateway.natGatewayId(), natGateway.stateAsString(), tagsMap, natGateway.vpcId());
+                    // ENI ID 리스트 추출
+                    List<String> networkInterfaceIds = natGateway.natGatewayAddresses().stream()
+                            .map(address -> address.networkInterfaceId())
+                            .collect(Collectors.toList());
+
+                    // ENI DTO 리스트 가져오기
+                    List<NetworkInterfaceDto> eniList = natGatewayEniMap.getOrDefault(natGateway.natGatewayId(), Collections.emptyList());
+
+                    // NatGatewayDto 생성
+                    return new NatGatewayDto(
+                            natGateway.natGatewayId(),
+                            natGateway.stateAsString(),
+                            tagsMap,
+                            natGateway.vpcId(),
+                            eniList // 연결된 ENI DTO 리스트
+                    );
                 })
                 .collect(Collectors.toList());
     }
+
 
     public List<EipDto> fetchElasticIps(String userId) {
         initializeClient(userId);
