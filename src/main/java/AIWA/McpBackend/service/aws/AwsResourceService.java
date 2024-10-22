@@ -82,7 +82,8 @@ public class AwsResourceService {
     }
 
     // Route Tables 가져오기
-    public List<RouteTableResponseDto> fetchRouteTables() {
+    public List<RouteTableResponseDto> fetchRouteTables(String userId) {
+        initializeClient(userId);
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
         return response.routeTables().stream()
@@ -106,7 +107,7 @@ public class AwsResourceService {
         DescribeVpcsResponse response = ec2Client.describeVpcs(request);
 
         List<SubnetResponseDto> subnets = fetchSubnets(userId);
-        List<RouteTableResponseDto> routeTables = fetchRouteTables();
+        List<RouteTableResponseDto> routeTables = fetchRouteTables(userId);
 
         return response.vpcs().stream()
                 .map(vpc -> {

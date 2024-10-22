@@ -2,12 +2,17 @@ package AIWA.McpBackend.provider.aws.api.controller.routetable;
 
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteAddRequestDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableRequestDto;
+import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableSubnetAssociationRequestDto;
 import AIWA.McpBackend.provider.response.CommonResult;
+import AIWA.McpBackend.provider.response.ListResult;
+import AIWA.McpBackend.service.aws.AwsResourceService;
 import AIWA.McpBackend.service.aws.routetable.RouteTableService;
 import AIWA.McpBackend.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/route-table")
@@ -16,6 +21,7 @@ public class RouteTableController {
 
     private final RouteTableService routeTableService;
 
+    private final AwsResourceService awsResourceService;
     private final ResponseService responseService;
 
     /**
@@ -71,5 +77,11 @@ public class RouteTableController {
             e.printStackTrace();
             return responseService.getFailResult();
         }
+    }
+
+    @GetMapping("/describe")
+    public ListResult<RouteTableResponseDto> describeRouteTable(@RequestParam String userId) {
+        List<RouteTableResponseDto> routeTables = awsResourceService.fetchRouteTables(userId);
+        return responseService.getListResult(routeTables);
     }
 }
