@@ -1,4 +1,4 @@
-# Docker Hub에 푸시하는 워크플로우-test-v3
+# Docker Hub에 푸시하는 워크플로우-test-v4
 name: Build and Push Docker Image to Docker Hub
 
 on:
@@ -107,8 +107,8 @@ jobs:
       - name: Checkout Helm chart repository
         uses: actions/checkout@v4
         with:
-          repository: AWS-Cloud-School-6/AIWA-MVP-Helm # Helm 차트 저장소 URL로 변경하세요
-          path: AIWA-MVP-Helm
+          repository: AWS-Cloud-School-6/AIWA-MCP-Helm # Helm 차트 저장소 URL로 변경하세요
+          path: AIWA-MCP-Helm
           token: ${{ secrets.PAT_AIWA_APP_TOKEN }} # 개인 액세스 토큰이 필요할 수 있습니다
 
       # # 13. Helm 차트 업데이트
@@ -124,7 +124,7 @@ jobs:
       # 12. Helm 차트 업데이트
       - name: Update Helm chart
         run: |
-          cd AIWA-MVP-Helm/aiwa-app
+          cd AIWA-MCP-Helm/aiwa-app
           if [ ! -f values.yaml ]; then
             echo "Error: values.yaml not found in $(pwd)"
             exit 1
@@ -154,7 +154,7 @@ jobs:
       # 13. Helm을 사용하여 EKS에 배포
       - name: Deploy to EKS using Helm
         run: |
-          helm upgrade --install aiwa-app ./AIWA-MVP-Helm/aiwa-app \
+          helm upgrade --install aiwa-app ./AIWA-MCP-Helm/aiwa-app \
             --namespace default \
             --create-namespace \
             --set image.tag=${{ needs.ci-build.outputs.image_tag }}
