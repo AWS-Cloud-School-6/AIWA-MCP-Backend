@@ -4,6 +4,7 @@ import AIWA.McpBackend.entity.member.Member;
 //import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
 import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayDto;
+import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
@@ -161,6 +162,23 @@ public class AwsResourceService {
                             .collect(Collectors.toList());
 
                     return new InternetGatewayDto(internetGateway.internetGatewayId(), tagsMap, attachments);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // NAT Gateways 가져오기
+    public List<NatGatewayDto> fetchNatGateways(String userId) {
+        initializeClient(userId);
+        DescribeNatGatewaysRequest request = DescribeNatGatewaysRequest.builder().build();
+        DescribeNatGatewaysResponse response = ec2Client.describeNatGateways(request);
+
+        return response.natGateways().stream()
+                .map(natGateway -> {
+                    // 태그를 맵으로 변환
+                    Map<String, String> tagsMap = natGateway.tags() == null ? Collections.emptyMap() :
+                            natGateway.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    return new NatGatewayDto(natGateway.natGatewayId(), natGateway.stateAsString(), tagsMap, natGateway.vpcId());
                 })
                 .collect(Collectors.toList());
     }
