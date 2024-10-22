@@ -56,14 +56,6 @@ public class TerraformService {
         Files.writeString(pemFile.toPath(), pemContent);
         pemFile.setReadable(true);
 
-        for (String key : fileKeys) {
-            String relativePath = key.substring(userPrefix.length());
-            File localFile = new File(tempDir, relativePath);
-            localFile.getParentFile().mkdirs();
-            String content = s3Service.getFileContent(key);
-            Files.writeString(localFile.toPath(), content);
-        }
-
         SSHClient ssh = new SSHClient();
         ssh.addHostKeyVerifier(new PromiscuousVerifier());
 
@@ -71,11 +63,17 @@ public class TerraformService {
             ssh.connect(remoteHost, remotePort);
             ssh.authPublickey(remoteUsername, pemFile.getAbsolutePath());
 
+            // Terraform 실행할 디렉토리
             String remoteDir = "/home/" + remoteUsername + "/terraform/" + userId;
             executeRemoteCommand(ssh, "mkdir -p " + remoteDir);
-            uploadDirectory(ssh, tempDir, remoteDir);
 
-            // Terraform 실행 전 잠금 해제 체크
+            // S3에서 Terraform 파일 다운로드
+            for (String key : fileKeys) {
+                String fileName = key.substring(userPrefix.length());
+                String downloadCommand = "aws s3 cp s3://" + s3Service.getBucketName() + "/" + key + " " + remoteDir + "/" + fileName;
+                executeRemoteCommand(ssh, downloadCommand);
+            }
+
             // Terraform 실행 명령
             String initCommand = "cd " + remoteDir + " && terraform init";
             String applyCommand = "cd " + remoteDir + " && terraform apply -auto-approve";
@@ -90,13 +88,11 @@ public class TerraformService {
                 throw new Exception("Terraform 실행 중 오류 발생: " + e.getMessage(), e);
             }
 
+            // Terraform 상태 파일 S3로 업로드
             String tfStateRemotePath = remoteDir + "/terraform.tfstate";
-            File tfStateFile = File.createTempFile("terraform.tfstate", null);
-            ssh.newSCPFileTransfer().download(tfStateRemotePath, tfStateFile.getAbsolutePath());
-
             String tfStateS3Key = userPrefix + "terraform.tfstate";
-            String tfStateContent = Files.readString(tfStateFile.toPath());
-            s3Service.uploadFileContent(tfStateS3Key, tfStateContent);
+            String downloadStateCommand = "aws s3 cp " + tfStateRemotePath + " s3://" + s3Service.getBucketName() + "/" + tfStateS3Key;
+            executeRemoteCommand(ssh, downloadStateCommand);
             executeRemoteCommand(ssh, "rm -rf " + remoteDir);
 
         } catch (IOException e) {
