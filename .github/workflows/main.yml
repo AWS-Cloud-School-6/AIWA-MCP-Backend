@@ -7,8 +7,11 @@ on:
       - main
 
 jobs:
-  build:
+  ci-build:
     runs-on: ubuntu-latest
+
+    outputs:
+      image_tag: ${{ steps.get_version.outputs.version }}
 
     steps:
       # 1. GitHub 저장소의 코드를 체크아웃
@@ -19,8 +22,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: "temurin"
+          java-version: "17"
 
       # 3. Gradle Wrapper에 실행 권한 부여
       - name: Grant execute permission for gradlew
@@ -37,14 +40,26 @@ jobs:
           TERRAFORM_PRIVATE_KEY_PATH: ${{ secrets.TERRAFORM_PRIVATE_KEY_PATH }}
         run: ./gradlew clean bootJar
 
-      # 5. Docker Hub에 로그인 (공식 로그인 액션 사용)
+      # 5. Docker image version 관리
+      - name: Get latest version
+        id: get_version
+        run: |
+          LATEST_TAG=$(curl -s https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring/tags/?page_size=1000 | jq -r '.results[].name' | grep -E '^v[0-9]+$' | sort -V | tail -n1)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "::set-output name=version::v1"
+          else
+            NEW_VERSION=$((${LATEST_TAG#v} + 1))
+            echo "::set-output name=version::v$NEW_VERSION"
+          fi
+
+      # 6. Docker Hub에 로그인 (공식 로그인 액션 사용)
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 6. Docker 이미지를 빌드
+      # 7. Docker 이미지를 빌드
       - name: Build the Docker image
         run: |
           docker build \
@@ -54,8 +69,92 @@ jobs:
             --build-arg TERRAFORM_PORT=${{ secrets.TERRAFORM_PORT }} \
             --build-arg TERRAFORM_USERNAME=${{ secrets.TERRAFORM_USERNAME }} \
             --build-arg TERRAFORM_PRIVATE_KEY_PATH=${{ secrets.TERRAFORM_PRIVATE_KEY_PATH }} \
-            -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1" .
+            -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:${{ steps.get_version.outputs.version }}" \
+            -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:latest" .
 
-      # 7. Docker Hub에 푸시
+      # 8. Docker Hub에 푸시
       - name: Push Docker image to Docker Hub
-        run: docker push "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:v1"
+        run: |
+          docker push "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:${{ steps.get_version.outputs.version }}"
+          docker push "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:latest"
+
+  cd-deploy:
+    runs-on: ubuntu-latest
+    needs: ci-build
+
+    steps:
+      # 9-1. AWS CLI 구성
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INFRA_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INFRA_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      # 9-2. AWS CLI 구성 확인
+      - name: Verify AWS CLI configuration
+        run: aws sts get-caller-identity
+
+      # 10-1. kubeconfig 업데이트
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name my-cluster --region ap-northeast-2
+
+      # 10-2. AWS CLI 구성 확인
+      - name: Verify kubcectl configuration
+        run: kubectl get node
+
+      # 11. Helm 차트 저장소 체크아웃
+      - name: Checkout Helm chart repository
+        uses: actions/checkout@v4
+        with:
+          repository: AWS-Cloud-School-6/AIWA-MVP-Helm # Helm 차트 저장소 URL로 변경하세요
+          path: AIWA-MVP-Helm
+          token: ${{ secrets.PAT_AIWA_APP_TOKEN }} # 개인 액세스 토큰이 필요할 수 있습니다
+
+      # # 13. Helm 차트 업데이트
+      # - name: Update Helm chart
+      #   run: |
+      #     cd helm-chart/aiwa-app
+      #     sed -i 's|tag: .*|tag: "${{ steps.get_version.outputs.version }}"|' values.yaml
+      #     git config user.name github-actions
+      #     git config user.email github-actions@github.com
+      #     git add .
+      #     git commit -m "Update image tag to ${{ steps.get_version.outputs.version }}"
+      #     git push
+      # 12. Helm 차트 업데이트
+      - name: Update Helm chart
+        run: |
+          cd AIWA-MVP-Helm/aiwa-app
+          if [ ! -f values.yaml ]; then
+            echo "Error: values.yaml not found in $(pwd)"
+            exit 1
+          fi
+          sed -i 's|tag: .*|tag: "${{ needs.ci-build.outputs.image_tag }}"|' values.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add values.yaml
+          if git diff --staged --quiet; then
+            echo "No changes to commit in values.yaml"
+          else
+            git commit -m "Update image tag to ${{ needs.ci-build.outputs.image_tag }}"
+            git push || { echo "Failed to push changes"; exit 1; }
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # continue-on-error: true
+
+      # # 13. Helm을 사용하여 EKS에 배포
+      # - name: Deploy to EKS using Helm
+      #   run: |
+      #     helm upgrade --install aiwa-app ./helm-repo/aiwa-app \
+      #       --namespace aiwa-app \
+      #       --create-namespace \
+      #       --set image.tag=${{ needs.ci-build.outputs.image_tag }}
+
+      # 13. Helm을 사용하여 EKS에 배포
+      - name: Deploy to EKS using Helm
+        run: |
+          helm upgrade --install aiwa-app ./AIWA-MVP-Helm/aiwa-app \
+            --namespace default \
+            --create-namespace \
+            --set image.tag=${{ needs.ci-build.outputs.image_tag }}
