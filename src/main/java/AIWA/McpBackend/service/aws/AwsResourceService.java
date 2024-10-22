@@ -29,12 +29,10 @@ import java.util.stream.Collectors;
 public class AwsResourceService {
 
     private Ec2Client ec2Client;
-
     private final MemberService memberService;
 
     public void initializeClient(String email) {
         // 특정 멤버의 AWS 자격 증명 가져오기
-/*        Member member = memberService.getMemberById(memberId); // memberId로 Member 객체 조회*/
         Member member = memberService.getMemberByEmail(email);
 
         // AWS 자격 증명 생성
@@ -69,7 +67,9 @@ public class AwsResourceService {
     }
 
     // Subnets 가져오기
-    public List<SubnetResponseDto> fetchSubnets() {
+    public List<SubnetResponseDto> fetchSubnets(String userId) {
+
+        initializeClient(userId);
         DescribeSubnetsRequest request = DescribeSubnetsRequest.builder().build();
         DescribeSubnetsResponse response = ec2Client.describeSubnets(request);
         return response.subnets().stream()
@@ -101,11 +101,11 @@ public class AwsResourceService {
     public List<VpcTotalResponseDto> fetchVpcs(String userId) {
 
         initializeClient(userId);
-        
+
         DescribeVpcsRequest request = DescribeVpcsRequest.builder().build();
         DescribeVpcsResponse response = ec2Client.describeVpcs(request);
 
-        List<SubnetResponseDto> subnets = fetchSubnets();
+        List<SubnetResponseDto> subnets = fetchSubnets(userId);
         List<RouteTableResponseDto> routeTables = fetchRouteTables();
 
         return response.vpcs().stream()
