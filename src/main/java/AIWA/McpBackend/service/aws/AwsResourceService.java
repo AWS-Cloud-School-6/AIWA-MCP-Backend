@@ -3,6 +3,7 @@ package AIWA.McpBackend.service.aws;
 import AIWA.McpBackend.entity.member.Member;
 //import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
+import AIWA.McpBackend.provider.aws.api.dto.eip.EipDto;
 import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
@@ -179,6 +180,21 @@ public class AwsResourceService {
                             natGateway.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
 
                     return new NatGatewayDto(natGateway.natGatewayId(), natGateway.stateAsString(), tagsMap, natGateway.vpcId());
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<EipDto> fetchElasticIps(String userId) {
+        initializeClient(userId);
+        DescribeAddressesRequest request = DescribeAddressesRequest.builder().build();
+        DescribeAddressesResponse response = ec2Client.describeAddresses(request);
+
+        return response.addresses().stream()
+                .map(address -> {
+                    Map<String, String> tagsMap = address.tags() == null ? Collections.emptyMap() :
+                            address.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    return new EipDto(address.allocationId(), address.publicIp(), address.domain().name(), tagsMap);
                 })
                 .collect(Collectors.toList());
     }

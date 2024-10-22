@@ -1,16 +1,19 @@
 package AIWA.McpBackend.provider.aws.api.controller.eip;
 
+import AIWA.McpBackend.provider.aws.api.dto.eip.EipDto;
 import AIWA.McpBackend.provider.aws.api.dto.eip.EipRequestDto;
+import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
 import AIWA.McpBackend.provider.response.CommonResult;
+import AIWA.McpBackend.provider.response.ListResult;
+import AIWA.McpBackend.service.aws.AwsResourceService;
 import AIWA.McpBackend.service.aws.eip.EipService;
 import AIWA.McpBackend.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/eip")
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EipController {
 
     private final EipService eipService;
-
+    private final AwsResourceService awsResourceService;
     private final ResponseService responseService;
 
     /**
@@ -53,5 +56,11 @@ public class EipController {
             e.printStackTrace();
             return responseService.getFailResult();
         }
+    }
+
+    @GetMapping("/describe")
+    public ListResult<EipDto> describeEip(@RequestParam String userId) {
+        List<EipDto> eips = awsResourceService.fetchElasticIps(userId);
+        return responseService.getListResult(eips);
     }
 }
