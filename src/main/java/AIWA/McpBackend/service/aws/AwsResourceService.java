@@ -4,6 +4,7 @@ import AIWA.McpBackend.entity.member.Member;
 //import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
 import AIWA.McpBackend.provider.aws.api.dto.eip.EipDto;
+import AIWA.McpBackend.provider.aws.api.dto.eni.NetworkInterfaceDto;
 import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
@@ -196,6 +197,37 @@ public class AwsResourceService {
                             address.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
 
                     return new EipDto(address.allocationId(), address.publicIp(), address.domain().name(), tagsMap);
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
+    public List<NetworkInterfaceDto> fetchNetworkInterfaces(String userId) {
+        initializeClient(userId);
+        DescribeNetworkInterfacesRequest request = DescribeNetworkInterfacesRequest.builder().build();
+        DescribeNetworkInterfacesResponse response = ec2Client.describeNetworkInterfaces(request);
+
+        return response.networkInterfaces().stream()
+                .map(networkInterface -> {
+                    // Check if tags exist and create a tags map
+                    Map<String, String> tagsMap = (networkInterface.tagSet() == null || networkInterface.tagSet().isEmpty())
+                            ? Collections.emptyMap()
+                            : networkInterface.tagSet().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    List<String> privateIpAddresses = networkInterface.privateIpAddresses().stream()
+                            .map(ipAddress -> ipAddress.privateIpAddress())
+                            .collect(Collectors.toList());
+
+                    return new NetworkInterfaceDto(
+                            networkInterface.networkInterfaceId(),
+                            networkInterface.subnetId(),
+                            networkInterface.vpcId(),
+                            networkInterface.statusAsString(),
+                            networkInterface.description(),
+                            tagsMap,
+                            privateIpAddresses
+                    );
                 })
                 .collect(Collectors.toList());
     }
