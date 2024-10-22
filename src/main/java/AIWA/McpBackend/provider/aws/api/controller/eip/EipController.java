@@ -47,7 +47,7 @@ public class EipController {
      * @param eipRequestDto 요청 DTO (사용자 ID, EIP ID 포함)
      * @return 성공 또는 오류 메시지
      */
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public CommonResult deleteEip(@RequestBody EipRequestDto eipRequestDto) {
         try {
             eipService.deleteEip(eipRequestDto.getUserId(), eipRequestDto.getEipId());
