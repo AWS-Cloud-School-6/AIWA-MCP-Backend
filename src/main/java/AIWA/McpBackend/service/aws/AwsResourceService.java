@@ -140,7 +140,9 @@ public class AwsResourceService {
     }
 
 
-    public List<InternetGatewayDto> fetchInternetGateways() {
+    public List<InternetGatewayDto> fetchInternetGateways(String userId) {
+
+        initializeClient(userId);
         DescribeInternetGatewaysRequest request = DescribeInternetGatewaysRequest.builder().build();
         DescribeInternetGatewaysResponse response = ec2Client.describeInternetGateways(request);
 

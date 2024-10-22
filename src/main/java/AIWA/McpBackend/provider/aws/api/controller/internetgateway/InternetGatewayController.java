@@ -49,11 +49,8 @@ public class InternetGatewayController {
 
     @GetMapping("/describe")
     public ListResult<InternetGatewayDto> describeInternetGateway(@RequestParam String userId) {
-
-        awsResourceService.initializeClient(userId);
-
-        List<InternetGatewayDto> internetGateways = awsResourceService.fetchInternetGateways();
-
+        
+        List<InternetGatewayDto> internetGateways = awsResourceService.fetchInternetGateways(userId);
         return responseService.getListResult(internetGateways);
     }
 }
