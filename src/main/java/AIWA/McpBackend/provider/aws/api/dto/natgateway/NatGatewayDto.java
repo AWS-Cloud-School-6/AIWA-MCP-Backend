@@ -1,23 +1,27 @@
 package AIWA.McpBackend.provider.aws.api.dto.natgateway;
 
+import AIWA.McpBackend.provider.aws.api.dto.eni.NetworkInterfaceDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
 public class NatGatewayDto {
-    private String natGatewayId; // NAT Gateway ID
-    private String state; // 상태 (예: "available", "pending")
-    private Map<String, String> tags; // 태그
-    private String vpcId; // 연결된 VPC ID
+    private String natGatewayId;
+    private String state;
+    private Map<String, String> tags;
+    private String vpcId;
+    private List<NetworkInterfaceDto> eniList; // ENI ID 리스트 추가
 
-    public NatGatewayDto(String natGatewayId, String state, Map<String, String> tags, String vpcId) {
-
+    public NatGatewayDto(String natGatewayId, String state, Map<String, String> tags, String vpcId,
+                         List<NetworkInterfaceDto> eniList) {
         this.natGatewayId = natGatewayId;
         this.state = state;
         this.tags = tags;
         this.vpcId = vpcId;
+        this.eniList = eniList;
     }
 }
