@@ -239,7 +239,7 @@ public class AwsResourceService {
 
         return response.networkInterfaces().stream()
                 .map(networkInterface -> {
-                    // Check if tags exist and create a tags map
+                    // 태그를 맵으로 변환
                     Map<String, String> tagsMap = (networkInterface.tagSet() == null || networkInterface.tagSet().isEmpty())
                             ? Collections.emptyMap()
                             : networkInterface.tagSet().stream().collect(Collectors.toMap(Tag::key, Tag::value));
@@ -248,6 +248,11 @@ public class AwsResourceService {
                             .map(ipAddress -> ipAddress.privateIpAddress())
                             .collect(Collectors.toList());
 
+                    // Public IP 리스트 초기화
+                    List<String> publicIpAddresses = (networkInterface.association() != null && networkInterface.association().publicIp() != null)
+                            ? List.of(networkInterface.association().publicIp())
+                            : Collections.emptyList(); // Public IP가 없는 경우 빈 리스트
+
                     return new NetworkInterfaceDto(
                             networkInterface.networkInterfaceId(),
                             networkInterface.subnetId(),
@@ -255,9 +260,12 @@ public class AwsResourceService {
                             networkInterface.statusAsString(),
                             networkInterface.description(),
                             tagsMap,
-                            privateIpAddresses
+                            privateIpAddresses,
+                            publicIpAddresses // Public IP 추가
                     );
                 })
                 .collect(Collectors.toList());
     }
+
+
 }
