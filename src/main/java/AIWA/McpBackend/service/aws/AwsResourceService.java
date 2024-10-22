@@ -51,7 +51,8 @@ public class AwsResourceService {
     }
 
     // EC2 Instances 가져오기
-    public List<Ec2InstanceDTO> fetchEc2Instances() {
+    public List<Ec2InstanceDTO> fetchEc2Instances(String userId) {
+        initializeClient(userId);
         DescribeInstancesRequest request = DescribeInstancesRequest.builder().build();
         DescribeInstancesResponse response = ec2Client.describeInstances(request);
         List<Ec2InstanceDTO> ec2Instances = new ArrayList<>();
