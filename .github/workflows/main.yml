@@ -1,4 +1,4 @@
-# Docker Hub에 푸시하는 워크플로우-test-v5
+# Docker Hub에 푸시하는 워크플로우-test-v6
 name: Build and Push Docker Image to Docker Hub
 
 on:
