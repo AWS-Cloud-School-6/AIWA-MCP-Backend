@@ -98,9 +98,15 @@ public class AwsResourceService {
     }
 
     // VPCs 가져오기
-    public List<VpcTotalResponseDto> fetchVpcs(List<SubnetResponseDto> subnets, List<RouteTableResponseDto> routeTables) {
+    public List<VpcTotalResponseDto> fetchVpcs(String userId) {
+
+        initializeClient(userId);
+        
         DescribeVpcsRequest request = DescribeVpcsRequest.builder().build();
         DescribeVpcsResponse response = ec2Client.describeVpcs(request);
+
+        List<SubnetResponseDto> subnets = fetchSubnets();
+        List<RouteTableResponseDto> routeTables = fetchRouteTables();
 
         return response.vpcs().stream()
                 .map(vpc -> {
