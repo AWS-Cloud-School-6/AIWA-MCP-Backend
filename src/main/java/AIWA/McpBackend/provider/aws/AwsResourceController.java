@@ -6,6 +6,7 @@ import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcTotalResponseDto;
 import AIWA.McpBackend.service.aws.AwsResourceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,14 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 @RestController
+@RequiredArgsConstructor
 public class AwsResourceController {
 
     private final AwsResourceService awsResourceService;
-
-    @Autowired
-    public AwsResourceController(AwsResourceService awsResourceService) {
-        this.awsResourceService = awsResourceService;
-    }
 
     @GetMapping("/api/aws/resources")
     public Map<String, Object> getAwsResources(@RequestParam String userId) {
@@ -37,7 +34,7 @@ public class AwsResourceController {
         resources.put("vpcs", vpcs);
 
         // Security Groups
-        List<SecurityGroupDTO> securityGroups = awsResourceService.fetchSecurityGroups();
+        List<SecurityGroupDTO> securityGroups = awsResourceService.fetchSecurityGroups(userId);
         resources.put("securityGroups", securityGroups);
 
         return resources; // 자동으로 JSON 형식으로 변환되어 응답

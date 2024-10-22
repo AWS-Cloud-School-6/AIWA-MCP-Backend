@@ -49,7 +49,7 @@ public class InternetGatewayController {
 
     @GetMapping("/describe")
     public ListResult<InternetGatewayDto> describeInternetGateway(@RequestParam String userId) {
-        
+
         List<InternetGatewayDto> internetGateways = awsResourceService.fetchInternetGateways(userId);
         return responseService.getListResult(internetGateways);
     }

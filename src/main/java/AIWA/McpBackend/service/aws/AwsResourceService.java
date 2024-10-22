@@ -127,7 +127,9 @@ public class AwsResourceService {
     }
 
     // Security Groups 가져오기
-    public List<SecurityGroupDTO> fetchSecurityGroups() {
+    public List<SecurityGroupDTO> fetchSecurityGroups(String userId) {
+
+        initializeClient(userId);
         DescribeSecurityGroupsRequest request = DescribeSecurityGroupsRequest.builder().build();
         DescribeSecurityGroupsResponse response = ec2Client.describeSecurityGroups(request);
         return response.securityGroups().stream()
