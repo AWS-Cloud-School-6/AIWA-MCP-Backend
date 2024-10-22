@@ -16,5 +16,6 @@ public class NetworkInterfaceDto {
     private String status; // 상태 (예: "available", "in-use")
     private String description; // 설명
     private Map<String, String> tags; // 태그
-    private List<String> privateIpAddresses; // 연결된 개인 IP 주소 목록
+    private List<String> privateIpAddresses;
+    private List<String> publicIpAddresses;// 연결된 개인 IP 주소 목록
 }
