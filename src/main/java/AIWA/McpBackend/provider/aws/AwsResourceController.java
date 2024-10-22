@@ -32,16 +32,8 @@ public class AwsResourceController {
         List<Ec2InstanceDTO> ec2Instances = awsResourceService.fetchEc2Instances();
         resources.put("ec2Instances", ec2Instances);
 
-        // Subnets
-        List<SubnetResponseDto> subnets = awsResourceService.fetchSubnets();
-        resources.put("subnets", subnets);
-
-        // Route Tables
-        List<RouteTableResponseDto> routeTables = awsResourceService.fetchRouteTables();
-        resources.put("routeTables", routeTables);
-
         // VPCs - 서브넷 및 라우팅 테이블 정보 전달
-        List<VpcTotalResponseDto> vpcs = awsResourceService.fetchVpcs(subnets, routeTables);
+        List<VpcTotalResponseDto> vpcs = awsResourceService.fetchVpcs(userId);
         resources.put("vpcs", vpcs);
 
         // Security Groups

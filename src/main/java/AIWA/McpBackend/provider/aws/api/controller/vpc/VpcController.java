@@ -70,18 +70,10 @@ public class VpcController {
     @GetMapping("/describe")
     public ListResult<VpcTotalResponseDto> describeVpc(@RequestParam String userId) {
 
-        Map<String, Object> resources = new HashMap<>();
-        awsResourceService.initializeClient(userId);
-
-        // Subnets
-        List<SubnetResponseDto> subnets = awsResourceService.fetchSubnets();
-
-        // Route Tables
-        List<RouteTableResponseDto> routeTables = awsResourceService.fetchRouteTables();
-
         // VPCs - 서브넷 및 라우팅 테이블 정보 전달
-        List<VpcTotalResponseDto> vpcs = awsResourceService.fetchVpcs(subnets, routeTables);
-
+        List<VpcTotalResponseDto> vpcs = awsResourceService.fetchVpcs(userId);
         return responseService.getListResult(vpcs);
     }
+
+
 }
