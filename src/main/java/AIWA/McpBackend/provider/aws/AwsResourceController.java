@@ -26,7 +26,7 @@ public class AwsResourceController {
         awsResourceService.initializeClient(userId);
 
         // EC2 Instances
-        List<Ec2InstanceDTO> ec2Instances = awsResourceService.fetchEc2Instances();
+        List<Ec2InstanceDTO> ec2Instances = awsResourceService.fetchEc2Instances(userId);
         resources.put("ec2Instances", ec2Instances);
 
         // VPCs - 서브넷 및 라우팅 테이블 정보 전달
