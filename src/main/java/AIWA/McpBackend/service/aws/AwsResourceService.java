@@ -3,7 +3,9 @@ package AIWA.McpBackend.service.aws;
 import AIWA.McpBackend.entity.member.Member;
 //import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
+import AIWA.McpBackend.provider.aws.api.dto.eip.EipDto;
 import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayDto;
+import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
@@ -29,12 +31,10 @@ import java.util.stream.Collectors;
 public class AwsResourceService {
 
     private Ec2Client ec2Client;
-
     private final MemberService memberService;
 
     public void initializeClient(String email) {
         // 특정 멤버의 AWS 자격 증명 가져오기
-/*        Member member = memberService.getMemberById(memberId); // memberId로 Member 객체 조회*/
         Member member = memberService.getMemberByEmail(email);
 
         // AWS 자격 증명 생성
@@ -51,7 +51,8 @@ public class AwsResourceService {
     }
 
     // EC2 Instances 가져오기
-    public List<Ec2InstanceDTO> fetchEc2Instances() {
+    public List<Ec2InstanceDTO> fetchEc2Instances(String userId) {
+        initializeClient(userId);
         DescribeInstancesRequest request = DescribeInstancesRequest.builder().build();
         DescribeInstancesResponse response = ec2Client.describeInstances(request);
         List<Ec2InstanceDTO> ec2Instances = new ArrayList<>();
@@ -69,7 +70,9 @@ public class AwsResourceService {
     }
 
     // Subnets 가져오기
-    public List<SubnetResponseDto> fetchSubnets() {
+    public List<SubnetResponseDto> fetchSubnets(String userId) {
+
+        initializeClient(userId);
         DescribeSubnetsRequest request = DescribeSubnetsRequest.builder().build();
         DescribeSubnetsResponse response = ec2Client.describeSubnets(request);
         return response.subnets().stream()
@@ -82,7 +85,8 @@ public class AwsResourceService {
     }
 
     // Route Tables 가져오기
-    public List<RouteTableResponseDto> fetchRouteTables() {
+    public List<RouteTableResponseDto> fetchRouteTables(String userId) {
+        initializeClient(userId);
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
         return response.routeTables().stream()
@@ -98,9 +102,15 @@ public class AwsResourceService {
     }
 
     // VPCs 가져오기
-    public List<VpcTotalResponseDto> fetchVpcs(List<SubnetResponseDto> subnets, List<RouteTableResponseDto> routeTables) {
+    public List<VpcTotalResponseDto> fetchVpcs(String userId) {
+
+        initializeClient(userId);
+
         DescribeVpcsRequest request = DescribeVpcsRequest.builder().build();
         DescribeVpcsResponse response = ec2Client.describeVpcs(request);
+
+        List<SubnetResponseDto> subnets = fetchSubnets(userId);
+        List<RouteTableResponseDto> routeTables = fetchRouteTables(userId);
 
         return response.vpcs().stream()
                 .map(vpc -> {
@@ -121,7 +131,9 @@ public class AwsResourceService {
     }
 
     // Security Groups 가져오기
-    public List<SecurityGroupDTO> fetchSecurityGroups() {
+    public List<SecurityGroupDTO> fetchSecurityGroups(String userId) {
+
+        initializeClient(userId);
         DescribeSecurityGroupsRequest request = DescribeSecurityGroupsRequest.builder().build();
         DescribeSecurityGroupsResponse response = ec2Client.describeSecurityGroups(request);
         return response.securityGroups().stream()
@@ -134,7 +146,9 @@ public class AwsResourceService {
     }
 
 
-    public List<InternetGatewayDto> fetchInternetGateways() {
+    public List<InternetGatewayDto> fetchInternetGateways(String userId) {
+
+        initializeClient(userId);
         DescribeInternetGatewaysRequest request = DescribeInternetGatewaysRequest.builder().build();
         DescribeInternetGatewaysResponse response = ec2Client.describeInternetGateways(request);
 
@@ -150,6 +164,38 @@ public class AwsResourceService {
                             .collect(Collectors.toList());
 
                     return new InternetGatewayDto(internetGateway.internetGatewayId(), tagsMap, attachments);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // NAT Gateways 가져오기
+    public List<NatGatewayDto> fetchNatGateways(String userId) {
+        initializeClient(userId);
+        DescribeNatGatewaysRequest request = DescribeNatGatewaysRequest.builder().build();
+        DescribeNatGatewaysResponse response = ec2Client.describeNatGateways(request);
+
+        return response.natGateways().stream()
+                .map(natGateway -> {
+                    // 태그를 맵으로 변환
+                    Map<String, String> tagsMap = natGateway.tags() == null ? Collections.emptyMap() :
+                            natGateway.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    return new NatGatewayDto(natGateway.natGatewayId(), natGateway.stateAsString(), tagsMap, natGateway.vpcId());
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<EipDto> fetchElasticIps(String userId) {
+        initializeClient(userId);
+        DescribeAddressesRequest request = DescribeAddressesRequest.builder().build();
+        DescribeAddressesResponse response = ec2Client.describeAddresses(request);
+
+        return response.addresses().stream()
+                .map(address -> {
+                    Map<String, String> tagsMap = address.tags() == null ? Collections.emptyMap() :
+                            address.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    return new EipDto(address.allocationId(), address.publicIp(), address.domain().name(), tagsMap);
                 })
                 .collect(Collectors.toList());
     }

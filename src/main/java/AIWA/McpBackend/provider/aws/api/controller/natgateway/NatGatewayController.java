@@ -1,11 +1,16 @@
 package AIWA.McpBackend.provider.aws.api.controller.natgateway;
 
+import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayRequestDto;
 import AIWA.McpBackend.provider.response.CommonResult;
+import AIWA.McpBackend.provider.response.ListResult;
+import AIWA.McpBackend.service.aws.AwsResourceService;
 import AIWA.McpBackend.service.aws.natgateway.NatGatewayService;
 import AIWA.McpBackend.service.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/nat-gateway")
@@ -14,6 +19,7 @@ public class NatGatewayController {
 
     private final NatGatewayService natGatewayService;
 
+    private final AwsResourceService awsResourceService;
     private final ResponseService responseService;
 
     @PostMapping("/create")
@@ -47,5 +53,11 @@ public class NatGatewayController {
             e.printStackTrace();
             return responseService.getFailResult();
         }
+    }
+
+    @GetMapping("/describe")
+    public ListResult<NatGatewayDto> describeNatGateway(@RequestParam String userId) {
+        List<NatGatewayDto> natGateways = awsResourceService.fetchNatGateways(userId);
+        return responseService.getListResult(natGateways);
     }
 }

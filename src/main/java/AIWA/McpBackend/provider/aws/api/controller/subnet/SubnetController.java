@@ -49,9 +49,7 @@ public class SubnetController {
     @GetMapping("/describe")
     public ListResult<SubnetResponseDto> describeSubnet(@RequestParam String userId) {
 
-        awsResourceService.initializeClient(userId);
-        List<SubnetResponseDto> subnets = awsResourceService.fetchSubnets();
-
+        List<SubnetResponseDto> subnets = awsResourceService.fetchSubnets(userId);
         return responseService.getListResult(subnets);
     }
 }
