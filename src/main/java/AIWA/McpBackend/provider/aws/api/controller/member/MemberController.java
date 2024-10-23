@@ -3,6 +3,7 @@ package AIWA.McpBackend.provider.aws.api.controller.member;
 import AIWA.McpBackend.entity.member.Member;
 import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberCredentialDTO;
 //import AIWA.McpBackend.service.kms.KmsService;
+import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberDeleteRequestDto;
 import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberRequestDto;
 import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberResponseDto;
 import AIWA.McpBackend.provider.response.CommonResult;
@@ -31,6 +32,17 @@ public class MemberController {
         MemberResponseDto memberResponseDto = MemberResponseDto.toDto(savedMember);
         return responseService.getSingleResult(memberResponseDto);
     }
+
+    // 회원 삭제
+    @DeleteMapping("/delete")
+    public CommonResult deleteMember(@RequestBody MemberDeleteRequestDto deleteMemberRequestDto) {
+        // 회원 삭제 서비스 호출
+        memberService.deleteMember(deleteMemberRequestDto);
+
+        // 성공 응답 반환 (ResponseService를 통해)
+        return responseService.getSuccessResult();
+    }
+
 
     // 특정 회원 조회
     @GetMapping("/")
