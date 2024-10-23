@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/annotations/2.20.100/9771e33f04cf53575a4acd45386989444ad0f612/annotations-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/annotations/2.20.100/8b8e6da32f9fc84104ba806e1a77d273f9dd0df9/annotations-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

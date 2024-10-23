@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/utils/2.20.100/ed41d1b449c54225d2ac9ebbb439c3805fcce169/utils-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/utils/2.20.100/af90ba7c3146f9f85777057aedd698a20dee9df4/utils-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

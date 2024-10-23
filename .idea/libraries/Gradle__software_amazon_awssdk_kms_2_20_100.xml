@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/kms/2.20.100/f40998c2de2300faaf6cd0d28f3b617187282a82/kms-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/kms/2.20.100/72766ae17e7cd0c5db0443f85ce6e2cbf4379f11/kms-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

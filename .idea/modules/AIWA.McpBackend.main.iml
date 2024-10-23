@@ -25,7 +25,7 @@
       <configuration />
     </facet>
   </component>
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
     <output url="file://$MODULE_DIR$/../../build/classes/java/main" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../build/generated/sources/annotationProcessor/java/main">
@@ -35,8 +35,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="jdk" jdkName="17" jdkType="JavaSDK" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.34" level="project" />
     <orderEntry type="library" name="Gradle: software.amazon.awssdk:ec2:2.20.76" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-actuator:3.3.4" level="project" />
@@ -53,7 +53,6 @@
     <orderEntry type="library" name="Gradle: com.amazonaws:aws-java-sdk-core:1.12.574" level="project" />
     <orderEntry type="library" name="Gradle: javax.xml.bind:jaxb-api:2.3.1" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-thymeleaf:3.3.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.h2database:h2:2.2.224" level="project" />
     <orderEntry type="library" name="Gradle: software.amazon.awssdk:aws-query-protocol:2.20.76" level="project" />
     <orderEntry type="library" name="Gradle: software.amazon.awssdk:protocol-core:2.20.100" level="project" />
     <orderEntry type="library" name="Gradle: software.amazon.awssdk:aws-core:2.20.100" level="project" />
@@ -75,6 +74,7 @@
     <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-jpa:3.3.4" level="project" />
     <orderEntry type="library" name="Gradle: org.hibernate.orm:hibernate-core:6.5.3.Final" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-aspects:6.1.13" level="project" />
+    <orderEntry type="library" name="Gradle: com.mysql:mysql-connector-j:8.3.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-context-support:6.1.13" level="project" />
     <orderEntry type="library" name="Gradle: org.freemarker:freemarker:2.3.33" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-web:6.3.3" level="project" />

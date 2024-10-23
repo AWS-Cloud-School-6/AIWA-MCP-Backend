@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/metrics-spi/2.20.100/69392b5ce9268f470a3c7e10578c0d7078579a7f/metrics-spi-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/metrics-spi/2.20.100/108609f615400c29dfdcf7809d4e28110d1557/metrics-spi-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

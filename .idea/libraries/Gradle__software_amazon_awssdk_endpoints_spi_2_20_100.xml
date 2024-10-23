@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/endpoints-spi/2.20.100/e77665bce26b1d924567b4bc9dcd421f985bff5f/endpoints-spi-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/endpoints-spi/2.20.100/9eb895cdf929487469c99f12d6a5f44d774a608c/endpoints-spi-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

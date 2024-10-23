@@ -69,6 +69,9 @@ jobs:
             --build-arg TERRAFORM_PORT=${{ secrets.TERRAFORM_PORT }} \
             --build-arg TERRAFORM_USERNAME=${{ secrets.TERRAFORM_USERNAME }} \
             --build-arg TERRAFORM_PRIVATE_KEY_PATH=${{ secrets.TERRAFORM_PRIVATE_KEY_PATH }} \
+            --build-arg SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}" \
+            --build-arg SPRING_DATASOURCE_USERNAME="${{ secrets.SPRING_DATASOURCE_USERNAME }}" \
+            --build-arg SPRING_DATASOURCE_PASSWORD="${{ secrets.SPRING_DATASOURCE_PASSWORD }}" \
             -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:${{ steps.get_version.outputs.version }}" \
             -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:latest" .
 
