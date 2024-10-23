@@ -3,8 +3,8 @@ name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
-    paths-ignore:
-      - ".github/workflows/**"
+    # paths-ignore:
+    #   - ".github/workflows/**"
 
     branches:
       - main
@@ -227,4 +227,3 @@ jobs:
   #           --namespace default \
   #           --create-namespace \
   #           --set image.tag=${{ needs.ci-build.outputs.image_tag }}
-  # 1
