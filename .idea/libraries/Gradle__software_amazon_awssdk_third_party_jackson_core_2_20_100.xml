@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/third-party-jackson-core/2.20.100/ee86ad691f3c7fb9434e647274e420064bce3b84/third-party-jackson-core-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/third-party-jackson-core/2.20.100/3e26044acc5ca9d996db2b63e297b5b536fe6ba/third-party-jackson-core-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

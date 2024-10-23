@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/auth/2.20.100/34807a734d65ada9e640286fc2238402bc7ea9a2/auth-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/auth/2.20.100/c6a58ad8a4ac7df91bed64d2d40218a325058599/auth-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

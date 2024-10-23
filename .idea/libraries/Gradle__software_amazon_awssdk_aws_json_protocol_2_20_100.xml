@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/aws-json-protocol/2.20.100/d8684b4e206449e9400b58e2f9b0badaa96c0389/aws-json-protocol-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/aws-json-protocol/2.20.100/ce12f42ce4494b9ffa904d3fd8160c7a8c8e8b7d/aws-json-protocol-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/profiles/2.20.100/bb1cbf8ba766ae22b00202f0dcdcde7bb0e62f65/profiles-2.20.100.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/software.amazon.awssdk/profiles/2.20.100/5028bbaa2cd9271f3d95f3935cf0f0a4717b3216/profiles-2.20.100-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
