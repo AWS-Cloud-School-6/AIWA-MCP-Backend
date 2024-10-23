@@ -3,8 +3,8 @@ name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
-    # paths-ignore:
-    #   - ".github/workflows/**"
+    paths-ignore:
+      - ".github/workflows/**"
 
     branches:
       - main
@@ -99,8 +99,6 @@ jobs:
             --build-arg SPRING_DATASOURCE_PASSWORD="${{ secrets.SPRING_DATASOURCE_PASSWORD }}" \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-      # -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:${{ steps.get_version.outputs.version }}" \
-      # -t "${{ secrets.DOCKERHUB_USERNAME }}/aiwa_spring:latest" .
 
       # # x. Docker Hub에 푸시
       # - name: Push Docker image to Docker Hub
@@ -129,23 +127,18 @@ jobs:
       # 11. Helm 차트 업데이트
       - name: Update Helm chart
         run: |
-          cd AIWA-MCP-Helm/aiwa-app
+          cd AIWA-MVP-Helm/aiwa-app
           if [ ! -f values.yaml ]; then
             echo "Error: values.yaml not found in $(pwd)"
             exit 1
           fi
           sed -i 's|tag: .*|tag: "${{ steps.get_version.outputs.version }}"|' values.yaml
+          sed -i 's|repository: .*|repository: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}|' values.yaml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add values.yaml
-          if git diff --staged --quiet; then
-            echo "No changes to commit in values.yaml"
-          else
-            git commit -m "Update image tag to ${{ steps.get_version.outputs.version }}"
-            git push || { echo "Failed to push changes"; exit 1; }
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git commit -m "Update image tag to ${{ steps.get_version.outputs.version }}"
+          git push
 
   # cd-deploy:
   #   runs-on: ubuntu-latest
