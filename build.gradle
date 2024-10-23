@@ -28,9 +28,12 @@ dependencies {
 	implementation 'software.amazon.awssdk:ec2:2.20.76'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'mysql:mysql-connector-java:8.0.33' // 최신 버전 사용
+
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 	compileOnly 'org.projectlombok:lombok'
 	implementation 'com.jcraft:jsch:0.1.55'
 	implementation 'com.hierynomus:sshj:0.34.0'
@@ -44,7 +47,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	implementation 'com.h2database:h2'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
