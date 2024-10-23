@@ -50,6 +50,24 @@ public class S3Service {
 //        s3Client.putObject(bucketName, userPrefix + "terraform.tfstate", emptyState);
     }
 
+    public void deleteUserDirectory(String userId) {
+        String userPrefix = "users/" + userId + "/";
+
+        // S3에서 해당 디렉터리(prefix)를 기준으로 모든 파일 목록을 가져옴
+        ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucketName).withPrefix(userPrefix);
+        ListObjectsV2Result result;
+
+        // 모든 객체를 반복적으로 가져와 삭제
+        do {
+            result = s3Client.listObjectsV2(request);
+            for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
+                s3Client.deleteObject(bucketName, objectSummary.getKey());
+            }
+            request.setContinuationToken(result.getNextContinuationToken());
+        } while (result.isTruncated());  // 계속해서 모든 객체를 삭제할 때까지 반복
+    }
+
+
     public void createTfvarsFile(String userId, String accessKey, String secretKey) {
         String userPrefix = "users/" + userId + "/";
         String tfvarsContent = String.format("""

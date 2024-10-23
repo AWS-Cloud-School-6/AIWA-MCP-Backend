@@ -1,6 +1,7 @@
 package AIWA.McpBackend.service.member;
 
 import AIWA.McpBackend.entity.member.Member;
+import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberDeleteRequestDto;
 import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberRequestDto;
 import AIWA.McpBackend.repository.member.MemberRepository;
 import AIWA.McpBackend.service.aws.s3.S3Service;
@@ -25,6 +26,23 @@ public class MemberService {
         Member regiMember=new Member(memberRequestDto.getName(), memberRequestDto.getPassword(), memberRequestDto.getEmail());
         return memberRepository.save(regiMember);
     }
+
+    public void deleteMember(MemberDeleteRequestDto deleteMemberRequestDto) {
+        String email = deleteMemberRequestDto.getEmail();
+
+        // 회원 정보 조회
+        Member member = memberRepository.findByEmail(email);
+        if (member == null) {
+            throw new RuntimeException("Member not found");
+        }
+
+        // S3에 저장된 사용자 디렉터리 삭제
+        s3Service.deleteUserDirectory(email);
+
+        // 회원 삭제
+        memberRepository.delete(member);
+    }
+
 
     // 특정 회원 조회
     public Optional<Member> getMemberById(Long id) {
