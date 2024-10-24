@@ -12,17 +12,16 @@ public class EipService {
     private final S3Service s3Service;
     private final TerraformService terraformService;
 
-    public void createEip(String userId, String instanceId) throws Exception {
+    public void createEip(String eipId,String userId) throws Exception {
         // 1. 새로운 EIP .tf 파일 생성
         String eipTfContent = String.format("""
             resource "aws_eip" "eip_%s" {
               vpc      = true
-              instance = "%s"
             }
-            """, instanceId, instanceId);
+            """, eipId);
 
         // 2. EIP .tf 파일 이름 설정 (예: eip_instanceId.tf)
-        String eipTfFileName = String.format("eip_%s.tf", instanceId);
+        String eipTfFileName = String.format("eip_%s.tf", eipId);
 
         // 3. S3에 새로운 EIP .tf 파일 업로드
         String s3Key = "users/" + userId + "/" + eipTfFileName;
