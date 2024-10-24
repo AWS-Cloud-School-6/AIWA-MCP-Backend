@@ -33,7 +33,7 @@ public class EipController {
     @PostMapping("/create")
     public CommonResult createEip(@RequestBody EipRequestDto eipRequestDto) {
         try {
-            eipService.createEip(eipRequestDto.getUserId(), eipRequestDto.getInstanceId());
+            eipService.createEip(eipRequestDto.getEipId(),eipRequestDto.getUserId());
             return responseService.getSuccessResult();
         } catch (Exception e) {
             e.printStackTrace();
