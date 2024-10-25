@@ -222,6 +222,7 @@ jobs:
   #     - name: Deploy to EKS using Helm
   #       run: |
   #         helm upgrade --install aiwa-app ./AIWA-MCP-Helm/aiwa-app \
+  # a
   #           --namespace default \
   #           --create-namespace \
   #           --set image.tag=${{ needs.ci-build.outputs.image_tag }}
