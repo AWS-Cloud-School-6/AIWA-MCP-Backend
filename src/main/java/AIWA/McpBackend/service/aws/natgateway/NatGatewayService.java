@@ -22,17 +22,30 @@ public class NatGatewayService {
      */
     public void createNatGateway(NatGatewayRequestDto natGatewayRequest, String userId) throws Exception {
         // 1. 새로운 NAT Gateway .tf 파일 생성
+        String allocationId = natGatewayRequest.getAllocationId();  // 추가된 allocation ID
+        String elasticIpName = natGatewayRequest.getElasticIpName();  // Elastic IP 이름
+
+        // 1-1. allocationId가 없을 경우, ElasticIpName을 사용
+        String finalAllocationId;
+        if (allocationId != null && !allocationId.isEmpty()) {
+            finalAllocationId = allocationId;  // 사용자가 제공한 allocationId 사용
+        } else if (elasticIpName != null && !elasticIpName.isEmpty()) {
+            // Elastic IP 이름이 있을 경우, 해당 이름으로 참조
+            finalAllocationId = "aws_eip." + elasticIpName + ".id";
+        } else {
+            throw new IllegalArgumentException("Either allocationId or elasticIpName must be provided.");
+        }
         String natGatewayTfContent = String.format("""
-                resource "aws_nat_gateway" "%s" {
-                  allocation_id = aws_eip.%s.id
-                  subnet_id = aws_subnet.%s.id
-                  tags = {
-                    Name = "%s"
-                  }
-                }
-                """,
+            resource "aws_nat_gateway" "%s" {
+              allocation_id = "%s"
+              subnet_id = aws_subnet.%s.id
+              tags = {
+                Name = "%s"
+              }
+            }
+            """,
                 natGatewayRequest.getNatGatewayName(),
-                natGatewayRequest.getElasticIpName(),
+                finalAllocationId,  // allocationId 적용
                 natGatewayRequest.getSubnetName(),
                 natGatewayRequest.getNatGatewayName());
 
