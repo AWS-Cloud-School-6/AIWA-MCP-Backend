@@ -28,7 +28,9 @@ dependencies {
 	implementation 'software.amazon.awssdk:ec2:2.20.76'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'mysql:mysql-connector-java:8.0.33' // 최신 버전 사용
+
+	implementation 'io.fabric8:kubernetes-client:6.12.1' // 최신 버전 확인
+	implementation 'mysql:mysql-connector-java:8.0.33'
 
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
