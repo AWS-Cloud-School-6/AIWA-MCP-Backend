@@ -23,11 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TerraformService {
     private final S3Service s3Service;
-
-    // terraform-svc의 외부 URL 설정
-    @Value("${terraform.remote.host}")
-    private String remoteHost;
-
     @Value("${s3.bucket.name}")
     private String bucketName;
 
@@ -73,7 +68,7 @@ public class TerraformService {
 
     private void executeRemoteCommands(String userId, String commands) throws IOException {
         // terraform-svc의 외부 IP 및 포트 설정 (application.properties에서 설정된 값을 사용)
-        String url = "http://" + "terraform-svc" + "/terraform/api/terraform/execute";
+        String url = "https://" + "terraform-svc" + "/terraform/api/terraform/execute";
 
         // HTTP 요청 생성
         RestTemplate restTemplate = new RestTemplate();
