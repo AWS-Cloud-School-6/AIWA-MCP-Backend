@@ -7,7 +7,11 @@ import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,20 +24,12 @@ import java.util.List;
 public class TerraformService {
     private final S3Service s3Service;
 
-    // 원격 Terraform 서버 정보
+    // terraform-svc의 외부 URL 설정
     @Value("${terraform.remote.host}")
     private String remoteHost;
 
-    @Value("${terraform.remote.port}")
-    private int remotePort;
-
-    @Value("${terraform.remote.username}")
-    private String remoteUsername;
-
-    // PEM 키 파일이 S3에 저장된 경로
-    @Value("${terraform.remote.privateKeyPath}")
-    private String pemKeyPath; // S3 경로 (예: "ssh/aiwa-tf-test.pem")
-
+    @Value("${s3.bucket.name}")
+    private String bucketName;
 
     /**
      * 사용자 ID에 해당하는 Terraform 작업을 실행합니다.
@@ -48,121 +44,59 @@ public class TerraformService {
             throw new Exception("S3에 Terraform 관련 파일이 없습니다: " + userPrefix);
         }
 
-        String pemKeyPath = "ssh/aiwa-tf-test.pem";
-        String pemContent = s3Service.getFileContent(pemKeyPath);
-        File tempDir = Files.createTempDirectory("terraform_" + userId).toFile();
-        tempDir.deleteOnExit();
-        File pemFile = new File(tempDir, "aiwa-tf-test.pem");
-        Files.writeString(pemFile.toPath(), pemContent);
-        pemFile.setReadable(true);
+        // 원격에서 실행할 명령어 목록을 준비합니다.
+        String remoteDir = "/home/" + userId + "/terraform"; // Pod 내 작업 디렉토리
+        StringBuilder commands = new StringBuilder();
+        commands.append("mkdir -p ").append(remoteDir).append(" && ");
 
-        SSHClient ssh = new SSHClient();
-        ssh.addHostKeyVerifier(new PromiscuousVerifier());
+        // S3에서 Terraform 파일 다운로드
+        for (String key : fileKeys) {
+            String fileName = key.substring(userPrefix.length());
+            String downloadCommand = "aws s3 cp s3://" + bucketName + "/" + key + " " + remoteDir + "/" + fileName;
+            commands.append(downloadCommand).append(" && ");
+        }
+
+        // Terraform 초기화 및 적용
+        String initCommand = "cd " + remoteDir + " && terraform init";
+        String applyCommand = "cd " + remoteDir + " && terraform apply -auto-approve";
+        commands.append(initCommand).append(" && ").append(applyCommand);
+
+        // Terraform 상태 파일 업로드 명령어
+        String tfStateRemotePath = remoteDir + "/terraform.tfstate";
+        String tfStateS3Key = userPrefix + "terraform.tfstate";
+        String uploadCommand = "aws s3 cp " + tfStateRemotePath + " s3://" + bucketName + "/" + tfStateS3Key;
+        commands.append(" && ").append(uploadCommand).append(" && rm -rf ").append(remoteDir);
+
+        // 명령어를 terraform-svc의 API로 전송하여 실행
+        executeRemoteCommands(userId, commands.toString());
+    }
+
+    private void executeRemoteCommands(String userId, String commands) throws IOException {
+        // terraform-svc의 외부 IP 및 포트 설정 (application.properties에서 설정된 값을 사용)
+        String url = "http://" + remoteHost + "/api/terraform/execute";
+
+        // HTTP 요청 생성
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
+        // 요청 바디 생성 (userId와 명령어를 JSON 형식으로 전송)
+        String requestBody = String.format("{\"userId\": \"%s\", \"commands\": \"%s\"}", userId, commands);
+
+        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
         try {
-            ssh.connect(remoteHost, remotePort);
-            ssh.authPublickey(remoteUsername, pemFile.getAbsolutePath());
+            // HTTP POST 요청을 통해 명령어 전송 및 실행 요청
+            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
 
-            // Terraform 실행할 디렉토리
-            String remoteDir = "/home/" + remoteUsername + "/terraform/" + userId;
-            executeRemoteCommand(ssh, "mkdir -p " + remoteDir);
-
-            // S3에서 Terraform 파일 다운로드
-            for (String key : fileKeys) {
-                String fileName = key.substring(userPrefix.length());
-                String downloadCommand = "aws s3 cp s3://" + s3Service.getBucketName() + "/" + key + " " + remoteDir + "/" + fileName;
-                executeRemoteCommand(ssh, downloadCommand);
-            }
-
-            // Terraform 실행 명령
-            String initCommand = "cd " + remoteDir + " && terraform init";
-            String applyCommand = "cd " + remoteDir + " && terraform apply -auto-approve";
-
-            // 에러 처리
-            try {
-                executeRemoteCommand(ssh, initCommand);
-                executeRemoteCommand(ssh, applyCommand);
-            } catch (IOException e) {
-                // 상태 파일 잠금 해제 관련 로직 추가
-                // 예: 명령어로 잠금 해제 시도
-                throw new Exception("Terraform 실행 중 오류 발생: " + e.getMessage(), e);
-            }
-
-            // Terraform 상태 파일 S3로 업로드
-            String tfStateRemotePath = remoteDir + "/terraform.tfstate";
-            String tfStateS3Key = userPrefix + "terraform.tfstate";
-            String downloadStateCommand = "aws s3 cp " + tfStateRemotePath + " s3://" + s3Service.getBucketName() + "/" + tfStateS3Key;
-            executeRemoteCommand(ssh, downloadStateCommand);
-            executeRemoteCommand(ssh, "rm -rf " + remoteDir);
-
-        } catch (IOException e) {
-            throw new Exception("Terraform 실행 중 오류 발생: " + e.getMessage(), e);
-        } finally {
-            try {
-                if (ssh.isConnected()) {
-                    ssh.disconnect();
-                }
-            } catch (IOException e) {
-                // 연결 종료 중 예외 발생 시 무시
-            }
-            deleteDirectoryRecursively(tempDir);
-        }
-    }
-
-    /**
-     * 로컬 디렉토리를 원격 디렉토리에 업로드합니다.
-     *
-     * @param ssh       SSHClient 객체
-     * @param localDir  로컬 디렉토리
-     * @param remoteDir 원격 디렉토리
-     * @throws IOException 파일 업로드 중 오류가 발생한 경우
-     */
-    private void uploadDirectory(SSHClient ssh, File localDir, String remoteDir) throws IOException {
-        // 재귀적으로 모든 파일 업로드
-        for (File file : localDir.listFiles()) {
-            if (file.isDirectory()) {
-                uploadDirectory(ssh, file, remoteDir + "/" + file.getName());
+            // 응답 확인
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("Terraform 작업이 성공적으로 실행되었습니다: " + response.getBody());
             } else {
-                String relativePath = localDir.toPath().relativize(file.toPath()).toString().replace("\\", "/"); // Windows 경로 호환성
-                String remoteFilePath = remoteDir + "/" + relativePath;
-                ssh.newSCPFileTransfer().upload(file.getAbsolutePath(), remoteFilePath);
+                throw new IOException("Terraform 작업 실행 실패: " + response.getBody());
             }
+        } catch (Exception e) {
+            throw new IOException("Terraform 작업 요청 중 오류 발생: " + e.getMessage(), e);
         }
-    }
-
-    /**
-     * 원격 서버에서 명령어를 실행합니다.
-     *
-     * @param ssh     SSHClient 객체
-     * @param command 실행할 명령어
-     * @throws IOException 명령 실행 중 오류가 발생한 경우
-     */
-    private void executeRemoteCommand(SSHClient ssh, String command) throws IOException {
-        try (Session session = ssh.startSession()) {
-            Session.Command cmd = session.exec(command);
-            cmd.join();
-
-            String errorOutput = IOUtils.readFully(cmd.getErrorStream()).toString();
-
-            if (cmd.getExitStatus() != 0) {
-                throw new IOException("원격 명령 실행 실패. 명령: " + command + ", 종료 코드: " + cmd.getExitStatus() + ", 에러: " + errorOutput);
-            }
-        }
-    }
-
-
-
-    /**
-     * 디렉토리를 재귀적으로 삭제합니다.
-     *
-     * @param directory 삭제할 디렉토리
-     */
-    private void deleteDirectoryRecursively(File directory) {
-        if (directory.isDirectory()) {
-            for (File file : directory.listFiles()) {
-                deleteDirectoryRecursively(file);
-            }
-        }
-        directory.delete();
     }
 }
