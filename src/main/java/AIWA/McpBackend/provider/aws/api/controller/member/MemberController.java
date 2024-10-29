@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
+@RequestMapping("/spring/api/members")
 public class MemberController {
     private final MemberService memberService;
     private final ResponseService responseService;
