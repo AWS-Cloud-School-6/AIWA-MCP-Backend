@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/vpc")
+@RequestMapping("/spring/api/vpc")
 @RequiredArgsConstructor
 public class VpcController {
 
