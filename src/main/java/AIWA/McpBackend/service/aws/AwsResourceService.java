@@ -56,7 +56,7 @@ public class AwsResourceService {
     }
 
     private MemberCredentialDTO getMemberCredentials(String email) {
-        String url = "http://" + "member-svc" + "/api/members/email/" + email; // 이메일을 URL 경로로 전달
+        String url = "http://" + "member-svc" + "/member/api/members/email/" + email; // 이메일을 URL 경로로 전달
 
         try {
             ResponseEntity<MemberCredentialDTO> response = restTemplate.getForEntity(url, MemberCredentialDTO.class);
