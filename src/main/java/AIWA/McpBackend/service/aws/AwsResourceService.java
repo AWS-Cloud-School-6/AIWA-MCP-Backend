@@ -57,9 +57,11 @@ public class AwsResourceService {
 
     private MemberCredentialDTO getMemberCredentials(String email) {
         String url = "http://" + "member-svc" + "/member/api/members/email/" + email; // 이메일을 URL 경로로 전달
+        System.out.println(url);
 
         try {
             ResponseEntity<MemberCredentialDTO> response = restTemplate.getForEntity(url, MemberCredentialDTO.class);
+            System.out.println(response.getBody());
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 return response.getBody(); // 응답에서 데이터 추출
             } else {
