@@ -2,10 +2,6 @@ package AIWA.McpBackend.service.terraform;
 
 import AIWA.McpBackend.service.aws.s3.S3Service;
 import lombok.RequiredArgsConstructor;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.IOUtils;
-import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
