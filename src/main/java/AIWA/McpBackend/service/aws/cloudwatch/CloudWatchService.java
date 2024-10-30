@@ -1,6 +1,6 @@
 package AIWA.McpBackend.service.aws.cloudwatch;
 
-import AIWA.McpBackend.provider.aws.api.dto.cloudwatch.CloudWatchAlarmRequestDto;
+import AIWA.McpBackend.controller.api.dto.cloudwatch.CloudWatchAlarmRequestDto;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 import AIWA.McpBackend.service.terraform.TerraformService;
 import lombok.RequiredArgsConstructor;

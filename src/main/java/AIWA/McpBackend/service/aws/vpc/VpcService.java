@@ -1,6 +1,6 @@
 package AIWA.McpBackend.service.aws.vpc;
 
-import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcRequestDto;
+import AIWA.McpBackend.controller.api.dto.vpc.VpcRequestDto;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 import AIWA.McpBackend.service.terraform.TerraformService;
 import lombok.RequiredArgsConstructor;

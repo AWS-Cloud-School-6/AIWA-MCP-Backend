@@ -1,8 +1,8 @@
 package AIWA.McpBackend.service.response;
 
-import AIWA.McpBackend.provider.response.CommonResult;
-import AIWA.McpBackend.provider.response.ListResult;
-import AIWA.McpBackend.provider.response.SingleResult;
+import AIWA.McpBackend.controller.api.dto.response.CommonResult;
+import AIWA.McpBackend.controller.api.dto.response.ListResult;
+import AIWA.McpBackend.controller.api.dto.response.SingleResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

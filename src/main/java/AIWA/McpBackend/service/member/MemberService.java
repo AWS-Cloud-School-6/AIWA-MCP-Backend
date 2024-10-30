@@ -1,8 +1,8 @@
 package AIWA.McpBackend.service.member;
 
 import AIWA.McpBackend.entity.member.Member;
-import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberDeleteRequestDto;
-import AIWA.McpBackend.provider.aws.api.dto.membercredential.MemberRequestDto;
+import AIWA.McpBackend.controller.api.dto.membercredential.MemberDeleteRequestDto;
+import AIWA.McpBackend.controller.api.dto.membercredential.MemberRequestDto;
 import AIWA.McpBackend.repository.member.MemberRepository;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 //import AIWA.McpBackend.service.kms.KmsService;
