@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/spring/api/vpc")
+@RequestMapping("/aws/api/vpc")
 @RequiredArgsConstructor
 public class VpcController {
 
