@@ -3,8 +3,8 @@ name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
-    # paths-ignore:
-    #   - ".github/workflows/**" 
+    paths-ignore:
+      - ".github/workflows/**" 
 
     branches:
       - main
