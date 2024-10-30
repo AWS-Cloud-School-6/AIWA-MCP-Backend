@@ -1,7 +1,7 @@
 package AIWA.McpBackend.service.aws.subnet;
 
 
-import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetRequestDto;
+import AIWA.McpBackend.controller.api.dto.subnet.SubnetRequestDto;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 import AIWA.McpBackend.service.terraform.TerraformService;
 import lombok.RequiredArgsConstructor;

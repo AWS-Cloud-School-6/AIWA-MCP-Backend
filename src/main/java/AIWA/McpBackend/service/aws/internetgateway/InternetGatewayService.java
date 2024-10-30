@@ -1,6 +1,6 @@
 package AIWA.McpBackend.service.aws.internetgateway;
 
-import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayRequestDto;
+import AIWA.McpBackend.controller.api.dto.internetgateway.InternetGatewayRequestDto;
 import AIWA.McpBackend.service.terraform.TerraformService;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 import lombok.RequiredArgsConstructor;

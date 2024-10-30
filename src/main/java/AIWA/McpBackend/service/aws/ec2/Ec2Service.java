@@ -1,6 +1,6 @@
 package AIWA.McpBackend.service.aws.ec2;
 
-import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2RequestDto;
+import AIWA.McpBackend.controller.api.dto.ec2.Ec2RequestDto;
 import AIWA.McpBackend.service.terraform.TerraformService;
 import AIWA.McpBackend.service.aws.s3.S3Service;
 import lombok.RequiredArgsConstructor;
