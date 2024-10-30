@@ -1,20 +1,19 @@
 package AIWA.McpBackend.service.aws;
 
-import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
-import AIWA.McpBackend.provider.aws.api.dto.eip.EipDto;
-import AIWA.McpBackend.provider.aws.api.dto.eni.NetworkInterfaceDto;
-import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayDto;
+
+import AIWA.McpBackend.controller.api.dto.ec2.Ec2InstanceDTO;
+import AIWA.McpBackend.controller.api.dto.eip.EipDto;
+import AIWA.McpBackend.controller.api.dto.eni.NetworkInterfaceDto;
+import AIWA.McpBackend.controller.api.dto.internetgateway.InternetGatewayDto;
+import AIWA.McpBackend.controller.api.dto.natgateway.NatGatewayDto;
+import AIWA.McpBackend.controller.api.dto.routetable.RouteDTO;
+import AIWA.McpBackend.controller.api.dto.routetable.RouteTableResponseDto;
+import AIWA.McpBackend.controller.api.dto.securitygroup.SecurityGroupDTO;
+import AIWA.McpBackend.controller.api.dto.subnet.SubnetResponseDto;
+import AIWA.McpBackend.controller.api.dto.vpc.VpcTotalResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.member.MemberCredentialDTO;
-import AIWA.McpBackend.provider.aws.api.dto.member.MemberResponseDto;
-import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
-import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
-import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
-import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
-import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetResponseDto;
-import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcTotalResponseDto;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
