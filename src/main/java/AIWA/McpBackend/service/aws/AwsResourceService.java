@@ -1,19 +1,22 @@
 package AIWA.McpBackend.service.aws;
 
-import AIWA.McpBackend.entity.member.Member;
 //import AIWA.McpBackend.service.kms.KmsService;
 import AIWA.McpBackend.provider.aws.api.dto.ec2.Ec2InstanceDTO;
 import AIWA.McpBackend.provider.aws.api.dto.eip.EipDto;
 import AIWA.McpBackend.provider.aws.api.dto.eni.NetworkInterfaceDto;
 import AIWA.McpBackend.provider.aws.api.dto.internetgateway.InternetGatewayDto;
+import AIWA.McpBackend.provider.aws.api.dto.member.MemberCredentialDTO;
+import AIWA.McpBackend.provider.aws.api.dto.member.MemberResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.natgateway.NatGatewayDto;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteDTO;
 import AIWA.McpBackend.provider.aws.api.dto.routetable.RouteTableResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.securitygroup.SecurityGroupDTO;
 import AIWA.McpBackend.provider.aws.api.dto.subnet.SubnetResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.vpc.VpcTotalResponseDto;
-import AIWA.McpBackend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -28,17 +31,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AwsResourceService {
 
+    private final RestTemplate restTemplate;
+
     private Ec2Client ec2Client;
-    private final MemberService memberService;
 
     public void initializeClient(String email) {
         // 특정 멤버의 AWS 자격 증명 가져오기
-        Member member = memberService.getMemberByEmail(email);
+        MemberCredentialDTO memberCredentialDto = getMemberCredentials(email);
+
+        if (memberCredentialDto == null) {
+            throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
+        }
 
         // AWS 자격 증명 생성
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
-                member.getAccess_key(),
-                member.getSecret_key()
+                memberCredentialDto.getAccessKey(),
+                memberCredentialDto.getSecretKey()
         );
 
         // EC2 클라이언트 생성
@@ -46,6 +54,23 @@ public class AwsResourceService {
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .region(Region.of("ap-northeast-2")) // Member에서 리전 가져오기
                 .build();
+    }
+
+    private MemberCredentialDTO getMemberCredentials(String email) {
+        String url = "http://" + "member-svc" + "/api/members/email/" + email; // 이메일을 URL 경로로 전달
+
+        try {
+            ResponseEntity<MemberCredentialDTO> response = restTemplate.getForEntity(url, MemberCredentialDTO.class);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                return response.getBody(); // 응답에서 데이터 추출
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            // 오류 처리
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // EC2 Instances 가져오기
