@@ -72,7 +72,6 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-aspects:6.1.13" level="project" />
     <orderEntry type="library" name="Gradle: io.fabric8:kubernetes-client-api:6.12.1" level="project" />
     <orderEntry type="library" name="Gradle: io.fabric8:zjsonpatch:0.3.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.mysql:mysql-connector-j:8.3.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-context-support:6.1.13" level="project" />
     <orderEntry type="library" name="Gradle: org.freemarker:freemarker:2.3.33" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-web:6.3.3" level="project" />
