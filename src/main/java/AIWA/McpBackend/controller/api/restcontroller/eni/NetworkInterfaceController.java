@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/network-interface")
+@RequestMapping("/aws/api/network-interface")
 @RequiredArgsConstructor
 public class NetworkInterfaceController {
 

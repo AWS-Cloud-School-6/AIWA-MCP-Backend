@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/cloudwatch")
+@RequestMapping("/aws/api/cloudwatch")
 @RequiredArgsConstructor
 public class CloudWatchController {
 

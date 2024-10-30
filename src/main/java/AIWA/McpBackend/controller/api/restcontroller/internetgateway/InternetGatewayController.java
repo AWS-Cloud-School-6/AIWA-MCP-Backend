@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/internet-gateway")
+@RequestMapping("/aws/api/internet-gateway")
 @RequiredArgsConstructor
 public class InternetGatewayController {
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subnet")
+@RequestMapping("/aws/api/subnet")
 @RequiredArgsConstructor
 public class SubnetController {
 

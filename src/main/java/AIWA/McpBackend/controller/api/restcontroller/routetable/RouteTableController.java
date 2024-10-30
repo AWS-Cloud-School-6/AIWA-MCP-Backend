@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/route-table")
+@RequestMapping("/aws/api/route-table")
 @RequiredArgsConstructor
 public class RouteTableController {
 

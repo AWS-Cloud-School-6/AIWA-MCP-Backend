@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/nat-gateway")
+@RequestMapping("/aws/api/nat-gateway")
 @RequiredArgsConstructor
 public class NatGatewayController {
 

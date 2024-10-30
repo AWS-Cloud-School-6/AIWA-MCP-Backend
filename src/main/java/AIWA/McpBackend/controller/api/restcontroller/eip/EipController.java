@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/eip")
+@RequestMapping("/aws/api/eip")
 @RequiredArgsConstructor
 public class EipController {
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ec2")
+@RequestMapping("/aws/api/ec2")
 @RequiredArgsConstructor
 public class Ec2Controller {
 
