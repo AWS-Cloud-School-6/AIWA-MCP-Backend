@@ -53,9 +53,11 @@ public class AwsResourceService {
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .region(Region.of("ap-northeast-2")) // Member에서 리전 가져오기
                 .build();
+        System.out.println(memberCredentialDto);
     }
 
     private MemberCredentialDTO getMemberCredentials(String email) {
+        System.out.println(email);
         String url = "http://" + "member-svc" + "/member/api/members/email?email=" + email;
         System.out.println(url);
 
