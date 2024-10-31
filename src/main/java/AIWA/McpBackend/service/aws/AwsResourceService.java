@@ -56,7 +56,7 @@ public class AwsResourceService {
     }
 
     private MemberCredentialDTO getMemberCredentials(String email) {
-        String url = "http://" + "member-svc" + "/member/api/members/email/?email=" + "?email=" + email;
+        String url = "http://" + "member-svc" + "/member/api/members/email/?email=" + email;
         System.out.println(url);
 
         try {
