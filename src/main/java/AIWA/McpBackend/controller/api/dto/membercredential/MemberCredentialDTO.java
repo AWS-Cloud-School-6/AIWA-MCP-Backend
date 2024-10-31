@@ -1,9 +1,11 @@
 package AIWA.McpBackend.controller.api.dto.membercredential;
 
 import lombok.Data;
+import lombok.Getter;
 
 
 @Data
+@Getter
 public class MemberCredentialDTO {
     private String email;
     private String accessKey;

@@ -6,6 +6,7 @@ import AIWA.McpBackend.controller.api.dto.eip.EipDto;
 import AIWA.McpBackend.controller.api.dto.eni.NetworkInterfaceDto;
 import AIWA.McpBackend.controller.api.dto.internetgateway.InternetGatewayDto;
 import AIWA.McpBackend.controller.api.dto.natgateway.NatGatewayDto;
+import AIWA.McpBackend.controller.api.dto.response.SingleResult;
 import AIWA.McpBackend.controller.api.dto.routetable.RouteDTO;
 import AIWA.McpBackend.controller.api.dto.routetable.RouteTableResponseDto;
 import AIWA.McpBackend.controller.api.dto.securitygroup.SecurityGroupDTO;
@@ -14,6 +15,8 @@ import AIWA.McpBackend.controller.api.dto.vpc.VpcTotalResponseDto;
 import AIWA.McpBackend.provider.aws.api.dto.member.MemberCredentialDTO;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -53,19 +56,19 @@ public class AwsResourceService {
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .region(Region.of("ap-northeast-2")) // Member에서 리전 가져오기
                 .build();
-        System.out.println(memberCredentialDto);
     }
 
     private MemberCredentialDTO getMemberCredentials(String email) {
-        System.out.println(email);
         String url = "http://" + "member-svc" + "/member/api/members/email?email=" + email;
-        System.out.println(url);
 
         try {
-            ResponseEntity<MemberCredentialDTO> response = restTemplate.getForEntity(url, MemberCredentialDTO.class);
-            System.out.println(response.getBody());
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                return response.getBody(); // 응답에서 데이터 추출
+            // SingleResult로 응답을 받음
+            ResponseEntity<SingleResult<MemberCredentialDTO>> response =
+                    restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<SingleResult<MemberCredentialDTO>>() {});
+
+            // 응답 상태 코드와 데이터 유효성 확인
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null && response.getBody().isSuccess()) {
+                return response.getBody().getData(); // SingleResult에서 MemberCredentialDTO 추출
             } else {
                 return null;
             }
