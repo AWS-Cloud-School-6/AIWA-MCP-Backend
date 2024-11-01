@@ -116,16 +116,28 @@ public class AwsResourceService {
     // Route Tables 가져오기
     public List<RouteTableResponseDto> fetchRouteTables(String userId) {
         initializeClient(userId);
+
+        // 서브넷 정보를 먼저 가져옵니다.
+        List<SubnetResponseDto> allSubnets = fetchSubnets(userId);
+
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
+
         return response.routeTables().stream()
                 .map(routeTable -> {
                     Map<String, String> tagsMap = routeTable.tags() == null ? Collections.emptyMap() :
                             routeTable.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
+
                     List<RouteDTO> routes = routeTable.routes().stream()
                             .map(route -> new RouteDTO(route.gatewayId(), route.destinationCidrBlock()))
                             .collect(Collectors.toList());
-                    return new RouteTableResponseDto(routeTable.routeTableId(), routeTable.vpcId(), routes, tagsMap);
+
+                    // 각 라우팅 테이블과 연결된 서브넷을 필터링합니다.
+                    List<SubnetResponseDto> associatedSubnets = allSubnets.stream()
+                            .filter(subnet -> subnet.getVpcId().equals(routeTable.vpcId()))
+                            .collect(Collectors.toList());
+
+                    return new RouteTableResponseDto(routeTable.routeTableId(), routeTable.vpcId(), routes, tagsMap, associatedSubnets);
                 })
                 .collect(Collectors.toList());
     }
