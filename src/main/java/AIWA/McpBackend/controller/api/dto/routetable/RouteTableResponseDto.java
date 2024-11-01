@@ -12,14 +12,19 @@ public class RouteTableResponseDto {
     private String vpcId;
     private List<RouteDTO> routes;
     private Map<String, String> tags;
-    private List<SubnetResponseDto> associatedSubnets;
+    private List<SubnetResponseDto> publicSubnets;  // 퍼블릭 서브넷 필드
+    private List<SubnetResponseDto> privateSubnets; // 프라이빗 서브넷 필드
 
-    public RouteTableResponseDto(String routeTableId, String vpcId, List<RouteDTO> routes, Map<String, String> tags, List<SubnetResponseDto> associatedSubnets) {
+    public RouteTableResponseDto(String routeTableId, String vpcId, List<RouteDTO> routes, Map<String, String> tags,
+                                 List<SubnetResponseDto> publicSubnets, List<SubnetResponseDto> privateSubnets) {
+
+
         this.routeTableId = routeTableId;
         this.vpcId = vpcId;
         this.routes = routes;
         this.tags = tags;
-        this.associatedSubnets = associatedSubnets;
+        this.publicSubnets = publicSubnets;
+        this.privateSubnets = privateSubnets;
     }
 
     // Getters and Setters
