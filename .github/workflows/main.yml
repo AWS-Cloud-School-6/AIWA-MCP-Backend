@@ -7,7 +7,8 @@ on:
     #      - ".github/workflows/**"
 
     branches:
-      - main
+      # - main
+      - 96-docs-github-actions에-aws-codeguru-연결
 
 jobs:
   ci-build:
