@@ -53,7 +53,10 @@ jobs:
         id: evaluate
         run: |
           CRITICAL_ISSUES=$(jq '.runs[].results[] | select(.level == "error") | .level' codeguru-security-results.sarif.json | wc -l)
-          echo "CRITICAL_ISSUES=$CRITICAL_ISSUES" >> $GITHUB_OUTPUT
+          HIGH_ISSUES=$(jq '.runs[].results[] | select(.level == "warning") | .level' codeguru-security-results.sarif.json | wc -l)
+          MEDIUM_ISSUES=$(jq '.runs[].results[] | select(.level == "note") | .level' codeguru-security-results.sarif.json | wc -l)
+          TOTAL_ISSUES=$((CRITICAL_ISSUES + HIGH_ISSUES + MEDIUM_ISSUES))
+          echo "TOTAL_ISSUES=$TOTAL_ISSUES" >> $GITHUB_OUTPUT
 
       # 7. Slack으로 알림. 경우에 따라 정지.
       - name: Notify Slack and stop if critical issues found
@@ -61,7 +64,7 @@ jobs:
         uses: slackapi/slack-github-action@v1
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          slack-channel: C0806L48YJH
+          slack-channel: 0806L48YJH
           slack-text: "❌ Critical security issues found in the code. CI process stopped. Please check CodeGuru results."
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -157,7 +160,7 @@ jobs:
         uses: slackapi/slack-github-action@v1
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          slack-channel: C0806L48YJH
+          slack-channel: 0806L48YJH
           slack-text: "✅ CI process completed successfully. Ready for CD."
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
