@@ -61,11 +61,10 @@ jobs:
       # 7. Slack으로 알림. 경우에 따라 정지.
       - name: Notify Slack and stop if critical issues found
         if: steps.evaluate.outputs.CRITICAL_ISSUES != '0'
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v2
         with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          slack-channel: 0806L48YJH
-          slack-text: "❌ Critical security issues found in the code. CI process stopped. Please check CodeGuru results."
+          channel-id: C0806L48YJH
+          slack-message: "❌ 코드에서 중요한 보안 문제가 발견되었습니다. CI 프로세스가 중단되었습니다. CodeGuru 결과를 확인하세요."
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -157,10 +156,11 @@ jobs:
       # 13.
       - name: Notify Slack about successful CI
         if: success()
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v2
         with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          slack-channel: 0806L48YJH
-          slack-text: "✅ CI process completed successfully. Ready for CD."
+          payload: |
+            {
+              "text": "✅ CI process completed successfully. Ready for CD."
+            }
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
