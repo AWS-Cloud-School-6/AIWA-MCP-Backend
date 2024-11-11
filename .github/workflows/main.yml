@@ -57,10 +57,13 @@ jobs:
           MEDIUM_ISSUES=$(jq '.runs[].results[] | select(.level == "note") | .level' codeguru-security-results.sarif.json | wc -l)
           TOTAL_ISSUES=$((CRITICAL_ISSUES + HIGH_ISSUES + MEDIUM_ISSUES))
           echo "TOTAL_ISSUES=$TOTAL_ISSUES" >> $GITHUB_OUTPUT
+          echo "CRITICAL_ISSUES=$CRITICAL_ISSUES" >> $GITHUB_OUTPUT
+          echo "HIGH_ISSUES=$HIGH_ISSUES" >> $GITHUB_OUTPUT
+          echo "MEDIUM_ISSUES=$MEDIUM_ISSUES" >> $GITHUB_OUTPUT
 
-      # 7. Slack으로 알림. 경우에 따라 정지.
-      - name: Notify Slack and stop if critical issues found
-        if: steps.evaluate.outputs.CRITICAL_ISSUES != '0'
+      # 7. Slack으로 알림 및 중지 조건 수정
+      - name: Notify Slack and stop if critical or high issues found
+        if: steps.evaluate.outputs.CRITICAL_ISSUES != '0' || steps.evaluate.outputs.HIGH_ISSUES != '0'
         uses: slackapi/slack-github-action@v1.24.0
         with:
           channel-id: C0806L48YJH
@@ -69,8 +72,8 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
       # 8. If CI 정지.
-      - name: Stop workflow if critical issues found
-        if: steps.evaluate.outputs.CRITICAL_ISSUES != '0'
+      - name: Stop workflow if critical or high issues found
+        if: steps.evaluate.outputs.CRITICAL_ISSUES != '0' || steps.evaluate.outputs.HIGH_ISSUES != '0'
         run: exit 1
 
       # 6. AWS 자격 증명 재구성 (서울 리전) - ECR
