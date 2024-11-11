@@ -48,6 +48,29 @@ jobs:
           source_path: .
           aws_region: ap-northeast-1
 
+      # 6. CodeGuru 보안 분석 결과 확인
+      - name: Evaluate CodeGuru results
+        id: evaluate
+        run: |
+          CRITICAL_ISSUES=$(jq '.runs[].results[] | select(.level == "error") | .level' codeguru-security-results.sarif.json | wc -l)
+          echo "CRITICAL_ISSUES=$CRITICAL_ISSUES" >> $GITHUB_OUTPUT
+
+      # 7. Slack으로 알림. 경우에 따라 정지.
+      - name: Notify Slack and stop if critical issues found
+        if: steps.evaluate.outputs.CRITICAL_ISSUES != '0'
+        uses: slackapi/slack-github-action@v1
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel: C0806L48YJH
+          slack-text: "❌ Critical security issues found in the code. CI process stopped. Please check CodeGuru results."
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      # 8. If CI 정지.
+      - name: Stop workflow if critical issues found
+        if: steps.evaluate.outputs.CRITICAL_ISSUES != '0'
+        run: exit 1
+
       # 6. AWS 자격 증명 재구성 (서울 리전) - ECR
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -127,3 +150,14 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 13.
+      - name: Notify Slack about successful CI
+        if: success()
+        uses: slackapi/slack-github-action@v1
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          slack-channel: C0806L48YJH
+          slack-text: "✅ CI process completed successfully. Ready for CD."
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
