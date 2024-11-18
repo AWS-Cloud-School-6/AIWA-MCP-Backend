@@ -75,11 +75,12 @@ public class AwsResourceService {
                     new ParameterizedTypeReference<SingleResult<MemberCredentialDTO>>() {}
             );
 
+            System.out.println(response.getBody().getData());
+            
             // 응답 상태와 데이터 유효성 확인
             if (response.getStatusCode().is2xxSuccessful() &&
                     response.getBody() != null &&
                     response.getBody().isSuccess()) {
-
                 // 성공적으로 데이터를 추출하여 반환
                 return response.getBody().getData();
             } else {
