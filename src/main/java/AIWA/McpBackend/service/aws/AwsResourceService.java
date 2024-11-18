@@ -18,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -59,25 +62,41 @@ public class AwsResourceService {
     }
 
     private MemberCredentialDTO getMemberCredentials(String email) {
-        String url = "http://" + "member-svc" + "/member/api/members/email?email=" + email;
+        // Base URL 설정
+        String baseUrl = "http://member-svc/member/api/members/email";
+        String url = baseUrl + "?email=" + email;
+        System.out.println("Requesting URL: " + url);
 
         try {
-            // SingleResult로 응답을 받음
-            ResponseEntity<SingleResult<MemberCredentialDTO>> response =
-                    restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<SingleResult<MemberCredentialDTO>>() {});
+            // REST API 호출
+            ResponseEntity<MemberCredentialDTO> response = restTemplate.getForEntity(url, MemberCredentialDTO.class);
+            System.out.println("Response: " + response.getBody());
 
-            // 응답 상태 코드와 데이터 유효성 확인
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null && response.getBody().isSuccess()) {
-                return response.getBody().getData(); // SingleResult에서 MemberCredentialDTO 추출
+            // 응답 상태 확인 및 데이터 반환
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                return response.getBody(); // 성공 시 응답 반환
             } else {
-                return null;
+                System.err.println("Failed to retrieve data. HTTP Status: " + response.getStatusCode());
+                return null; // 실패 시 null 반환
             }
+        } catch (HttpClientErrorException e) {
+            // HTTP 클라이언트 오류 처리 (예: 4xx)
+            System.err.println("Client error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+        } catch (HttpServerErrorException e) {
+            // HTTP 서버 오류 처리 (예: 5xx)
+            System.err.println("Server error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+        } catch (ResourceAccessException e) {
+            // 네트워크 오류 처리
+            System.err.println("Network error: " + e.getMessage());
         } catch (Exception e) {
-            // 오류 처리
+            // 기타 예외 처리
+            System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();
-            return null;
         }
+
+        return null; // 오류 발생 시 null 반환
     }
+
 
     // EC2 Instances 가져오기
     public List<Ec2InstanceDTO> fetchEc2Instances(String userId) {
