@@ -76,7 +76,7 @@ public class AwsResourceService {
             );
 
             System.out.println(response.getBody().getData());
-            
+
             // 응답 상태와 데이터 유효성 확인
             if (response.getStatusCode().is2xxSuccessful() &&
                     response.getBody() != null &&
@@ -149,15 +149,14 @@ public class AwsResourceService {
     }
 
     // VPCs 가져오기
-    public List<VpcTotalResponseDto> fetchVpcs(String userId,String companyName) {
-
-        initializeClient(userId,companyName);
+    public List<VpcTotalResponseDto> fetchVpcs(String userId, String companyName) {
+        initializeClient(userId, companyName);
 
         DescribeVpcsRequest request = DescribeVpcsRequest.builder().build();
         DescribeVpcsResponse response = ec2Client.describeVpcs(request);
 
-        List<SubnetResponseDto> subnets = fetchSubnets(userId,companyName);
-        List<RouteTableResponseDto> routeTables = fetchRouteTables(userId,companyName);
+        List<SubnetResponseDto> subnets = fetchSubnets(userId, companyName);
+        List<RouteTableResponseDto> routeTables = fetchRouteTables(userId, companyName);
 
         return response.vpcs().stream()
                 .map(vpc -> {
@@ -168,14 +167,16 @@ public class AwsResourceService {
                             .filter(subnet -> subnet.getVpcId().equals(vpc.vpcId()))
                             .collect(Collectors.toList());
 
+                    // Null 체크를 추가하여 VpcId가 null인 경우 예외가 발생하지 않도록 처리
                     List<RouteTableResponseDto> associatedRouteTables = routeTables.stream()
-                            .filter(routeTable -> routeTable.getVpcId().equals(vpc.vpcId()))
+                            .filter(routeTable -> routeTable.getVpcId() != null && routeTable.getVpcId().equals(vpc.vpcId()))
                             .collect(Collectors.toList());
 
                     return new VpcTotalResponseDto(vpc.vpcId(), vpc.cidrBlock(), tagsMap, associatedSubnets, associatedRouteTables);
                 })
                 .collect(Collectors.toList());
     }
+
 
     // Security Groups 가져오기
     public List<SecurityGroupDTO> fetchSecurityGroups(String userId,String companyName) {
