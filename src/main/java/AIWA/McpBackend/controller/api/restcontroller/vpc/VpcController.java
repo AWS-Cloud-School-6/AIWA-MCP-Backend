@@ -64,10 +64,10 @@ public class VpcController {
     }
 
     @GetMapping("/describe")
-    public ListResult<VpcTotalResponseDto> describeVpc(@RequestParam String userId) {
+    public ListResult<VpcTotalResponseDto> describeVpc(@RequestParam String userId,@RequestParam String companyName) {
 
         // VPCs - 서브넷 및 라우팅 테이블 정보 전달
-        List<VpcTotalResponseDto> vpcs = awsResourceService.fetchVpcs(userId);
+        List<VpcTotalResponseDto> vpcs = awsResourceService.fetchVpcs(userId,companyName);
         return responseService.getListResult(vpcs);
     }
 

@@ -37,9 +37,9 @@ public class AwsResourceService {
 
     private Ec2Client ec2Client;
 
-    public void initializeClient(String email) {
+    public void initializeClient(String email,String companyName) {
         // 특정 멤버의 AWS 자격 증명 가져오기
-        MemberCredentialDTO memberCredentialDto = getMemberCredentials(email);
+        MemberCredentialDTO memberCredentialDto = getMemberCredentials(email,companyName);
 
         if (memberCredentialDto == null) {
             throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
@@ -57,6 +57,9 @@ public class AwsResourceService {
                 .region(Region.of("ap-northeast-2")) // Member에서 리전 가져오기
                 .build();
     }
+
+
+
 
     private MemberCredentialDTO getMemberCredentials(String email, String companyName) {
         // 새로운 경로에 맞는 URL 생성
@@ -94,8 +97,8 @@ public class AwsResourceService {
 
 
     // EC2 Instances 가져오기
-    public List<Ec2InstanceDTO> fetchEc2Instances(String userId) {
-        initializeClient(userId);
+    public List<Ec2InstanceDTO> fetchEc2Instances(String userId,String companyName) {
+        initializeClient(userId,companyName);
         DescribeInstancesRequest request = DescribeInstancesRequest.builder().build();
         DescribeInstancesResponse response = ec2Client.describeInstances(request);
         List<Ec2InstanceDTO> ec2Instances = new ArrayList<>();
@@ -113,9 +116,9 @@ public class AwsResourceService {
     }
 
     // Subnets 가져오기
-    public List<SubnetResponseDto> fetchSubnets(String userId) {
+    public List<SubnetResponseDto> fetchSubnets(String userId,String companyName) {
 
-        initializeClient(userId);
+        initializeClient(userId,companyName);
         DescribeSubnetsRequest request = DescribeSubnetsRequest.builder().build();
         DescribeSubnetsResponse response = ec2Client.describeSubnets(request);
         return response.subnets().stream()
@@ -128,8 +131,8 @@ public class AwsResourceService {
     }
 
     // Route Tables 가져오기
-    public List<RouteTableResponseDto> fetchRouteTables(String userId) {
-        initializeClient(userId);
+    public List<RouteTableResponseDto> fetchRouteTables(String userId,String companyName) {
+        initializeClient(userId,companyName);
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
         return response.routeTables().stream()
@@ -145,15 +148,15 @@ public class AwsResourceService {
     }
 
     // VPCs 가져오기
-    public List<VpcTotalResponseDto> fetchVpcs(String userId) {
+    public List<VpcTotalResponseDto> fetchVpcs(String userId,String companyName) {
 
-        initializeClient(userId);
+        initializeClient(userId,companyName);
 
         DescribeVpcsRequest request = DescribeVpcsRequest.builder().build();
         DescribeVpcsResponse response = ec2Client.describeVpcs(request);
 
-        List<SubnetResponseDto> subnets = fetchSubnets(userId);
-        List<RouteTableResponseDto> routeTables = fetchRouteTables(userId);
+        List<SubnetResponseDto> subnets = fetchSubnets(userId,companyName);
+        List<RouteTableResponseDto> routeTables = fetchRouteTables(userId,companyName);
 
         return response.vpcs().stream()
                 .map(vpc -> {
@@ -174,9 +177,9 @@ public class AwsResourceService {
     }
 
     // Security Groups 가져오기
-    public List<SecurityGroupDTO> fetchSecurityGroups(String userId) {
+    public List<SecurityGroupDTO> fetchSecurityGroups(String userId,String companyName) {
 
-        initializeClient(userId);
+        initializeClient(userId,companyName);
         DescribeSecurityGroupsRequest request = DescribeSecurityGroupsRequest.builder().build();
         DescribeSecurityGroupsResponse response = ec2Client.describeSecurityGroups(request);
         return response.securityGroups().stream()
@@ -189,9 +192,9 @@ public class AwsResourceService {
     }
 
 
-    public List<InternetGatewayDto> fetchInternetGateways(String userId) {
+    public List<InternetGatewayDto> fetchInternetGateways(String userId,String companyName) {
 
-        initializeClient(userId);
+        initializeClient(userId,companyName);
         DescribeInternetGatewaysRequest request = DescribeInternetGatewaysRequest.builder().build();
         DescribeInternetGatewaysResponse response = ec2Client.describeInternetGateways(request);
 
@@ -212,13 +215,13 @@ public class AwsResourceService {
     }
 
     // NAT Gateways 가져오기
-    public List<NatGatewayDto> fetchNatGateways(String userId) {
-        initializeClient(userId);
+    public List<NatGatewayDto> fetchNatGateways(String userId,String companyName) {
+        initializeClient(userId,companyName);
         DescribeNatGatewaysRequest request = DescribeNatGatewaysRequest.builder().build();
         DescribeNatGatewaysResponse response = ec2Client.describeNatGateways(request);
 
         // ENI 정보를 가져옵니다.
-        List<NetworkInterfaceDto> networkInterfaces = fetchNetworkInterfaces(userId);
+        List<NetworkInterfaceDto> networkInterfaces = fetchNetworkInterfaces(userId,companyName);
         Map<String, List<NetworkInterfaceDto>> natGatewayEniMap = new HashMap<>();
 
         // NAT Gateway와 연결된 ENI 정보를 매핑합니다.
@@ -260,8 +263,8 @@ public class AwsResourceService {
     }
 
 
-    public List<EipDto> fetchElasticIps(String userId) {
-        initializeClient(userId);
+    public List<EipDto> fetchElasticIps(String userId,String companyName) {
+        initializeClient(userId,companyName);
         DescribeAddressesRequest request = DescribeAddressesRequest.builder().build();
         DescribeAddressesResponse response = ec2Client.describeAddresses(request);
 
@@ -277,8 +280,8 @@ public class AwsResourceService {
 
 
 
-    public List<NetworkInterfaceDto> fetchNetworkInterfaces(String userId) {
-        initializeClient(userId);
+    public List<NetworkInterfaceDto> fetchNetworkInterfaces(String userId,String companyName) {
+        initializeClient(userId,companyName);
         DescribeNetworkInterfacesRequest request = DescribeNetworkInterfacesRequest.builder().build();
         DescribeNetworkInterfacesResponse response = ec2Client.describeNetworkInterfaces(request);
 

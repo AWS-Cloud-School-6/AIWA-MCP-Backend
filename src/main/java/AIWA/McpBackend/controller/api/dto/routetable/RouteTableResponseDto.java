@@ -27,6 +27,9 @@ public class RouteTableResponseDto {
         this.privateSubnets = privateSubnets;
     }
 
+    public RouteTableResponseDto(String routeTableId, String vpcId, List<RouteDTO> routes, Map<String, String> tagsMap) {
+    }
+
     // Getters and Setters
 
 }

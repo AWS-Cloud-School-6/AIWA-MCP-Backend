@@ -45,8 +45,8 @@ public class Ec2Controller {
     }
 
     @GetMapping("/describe")
-    public ListResult<Ec2InstanceDTO> describeEc2(@RequestParam String userId) {
-        List<Ec2InstanceDTO> ec2Instances = awsResourceService.fetchEc2Instances(userId);
+    public ListResult<Ec2InstanceDTO> describeEc2(@RequestParam String userId,@RequestParam String companyName) {
+        List<Ec2InstanceDTO> ec2Instances = awsResourceService.fetchEc2Instances(userId,companyName);
         return responseService.getListResult(ec2Instances);
     }
 }

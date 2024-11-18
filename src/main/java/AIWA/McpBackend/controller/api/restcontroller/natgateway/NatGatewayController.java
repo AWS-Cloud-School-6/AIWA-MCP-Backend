@@ -56,8 +56,8 @@ public class NatGatewayController {
     }
 
     @GetMapping("/describe")
-    public ListResult<NatGatewayDto> describeNatGateway(@RequestParam String userId) {
-        List<NatGatewayDto> natGateways = awsResourceService.fetchNatGateways(userId);
+    public ListResult<NatGatewayDto> describeNatGateway(@RequestParam String userId,@RequestParam String companyName) {
+        List<NatGatewayDto> natGateways = awsResourceService.fetchNatGateways(userId,companyName);
         return responseService.getListResult(natGateways);
     }
 }

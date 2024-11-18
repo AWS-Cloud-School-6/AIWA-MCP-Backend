@@ -80,8 +80,8 @@ public class RouteTableController {
     }
 
     @GetMapping("/describe")
-    public ListResult<RouteTableResponseDto> describeRouteTable(@RequestParam String userId) {
-        List<RouteTableResponseDto> routeTables = awsResourceService.fetchRouteTables(userId);
+    public ListResult<RouteTableResponseDto> describeRouteTable(@RequestParam String userId,@RequestParam String companyName) {
+        List<RouteTableResponseDto> routeTables = awsResourceService.fetchRouteTables(userId,companyName);
         return responseService.getListResult(routeTables);
     }
 }

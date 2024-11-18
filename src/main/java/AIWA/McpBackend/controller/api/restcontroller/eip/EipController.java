@@ -56,8 +56,8 @@ public class EipController {
     }
 
     @GetMapping("/describe")
-    public ListResult<EipDto> describeEip(@RequestParam String userId) {
-        List<EipDto> eips = awsResourceService.fetchElasticIps(userId);
+    public ListResult<EipDto> describeEip(@RequestParam String userId,@RequestParam String companyName) {
+        List<EipDto> eips = awsResourceService.fetchElasticIps(userId,companyName);
         return responseService.getListResult(eips);
     }
 }

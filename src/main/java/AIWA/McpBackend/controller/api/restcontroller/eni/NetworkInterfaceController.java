@@ -21,8 +21,8 @@ public class NetworkInterfaceController {
     private final ResponseService responseService;
 
     @GetMapping("/describe")
-    public ListResult<NetworkInterfaceDto> listNetworkInterfaces(@RequestParam String userId) {
-        List<NetworkInterfaceDto> networkInterfaces = awsResourceService.fetchNetworkInterfaces(userId);
+    public ListResult<NetworkInterfaceDto> listNetworkInterfaces(@RequestParam String userId,@RequestParam String companyName) {
+        List<NetworkInterfaceDto> networkInterfaces = awsResourceService.fetchNetworkInterfaces(userId,companyName);
         return responseService.getListResult(networkInterfaces);
     }
 }

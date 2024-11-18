@@ -45,8 +45,8 @@ public class SecurityGroupController {
     }
 
     @GetMapping("/describe")
-    public ListResult<SecurityGroupDTO> describeSecurityGroup(@RequestParam String userId) {
-        List<SecurityGroupDTO> securityGroups = awsResourceService.fetchSecurityGroups(userId);
+    public ListResult<SecurityGroupDTO> describeSecurityGroup(@RequestParam String userId,@RequestParam String companyName) {
+        List<SecurityGroupDTO> securityGroups = awsResourceService.fetchSecurityGroups(userId,companyName);
         return responseService.getListResult(securityGroups);
     }
 }
