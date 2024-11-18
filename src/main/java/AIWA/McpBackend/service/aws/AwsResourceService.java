@@ -58,41 +58,40 @@ public class AwsResourceService {
                 .build();
     }
 
-    private MemberCredentialDTO getMemberCredentials(String email) {
-        // Base URL 설정
-        String url = "http://member-svc/member/api/members/email?email=" + email;
+    private MemberCredentialDTO getMemberCredentials(String email, String companyName) {
+        // 새로운 경로에 맞는 URL 생성
+        String url = String.format("http://member-svc/member/api/members/%s/%s", email, companyName);
+        System.out.println("Request URL: " + url);
 
         try {
-            // SingleResult<MemberCredentialDTO>로 응답을 받기 위한 요청
-            ResponseEntity<SingleResult<MemberCredentialDTO>> response =
-                    restTemplate.exchange(
-                            url,
-                            HttpMethod.GET,
-                            null,
-                            new ParameterizedTypeReference<SingleResult<MemberCredentialDTO>>() {}
-                    );
+            // API 호출: SingleResult<MemberCredentialDTO> 형태의 응답 처리
+            ResponseEntity<SingleResult<MemberCredentialDTO>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<SingleResult<MemberCredentialDTO>>() {}
+            );
 
-            // 응답 상태 코드 및 SingleResult 성공 여부 확인
+            // 응답 상태와 데이터 유효성 확인
             if (response.getStatusCode().is2xxSuccessful() &&
                     response.getBody() != null &&
                     response.getBody().isSuccess()) {
 
-                // 성공적으로 데이터를 가져온 경우 반환
+                // 성공적으로 데이터를 추출하여 반환
                 return response.getBody().getData();
             } else {
-                // 실패 시 로그 출력 및 null 반환
-                System.err.println("Failed to retrieve MemberCredentialDTO. Response: " + response);
+                // 실패한 경우 null 반환
+                System.err.println("Failed to retrieve data. Response: " + response);
                 return null;
             }
         } catch (Exception e) {
-            // 오류 발생 시 로그 출력 및 null 반환
+            // 예외 발생 시 로그 출력 및 null 반환
             System.err.println("Exception while calling getMemberCredentials: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
 
-    
 
     // EC2 Instances 가져오기
     public List<Ec2InstanceDTO> fetchEc2Instances(String userId) {
@@ -131,57 +130,19 @@ public class AwsResourceService {
     // Route Tables 가져오기
     public List<RouteTableResponseDto> fetchRouteTables(String userId) {
         initializeClient(userId);
-
-        // 모든 서브넷을 가져옵니다.
-        List<SubnetResponseDto> allSubnets = fetchSubnets(userId);
-
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
-
         return response.routeTables().stream()
                 .map(routeTable -> {
                     Map<String, String> tagsMap = routeTable.tags() == null ? Collections.emptyMap() :
                             routeTable.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
-
                     List<RouteDTO> routes = routeTable.routes().stream()
                             .map(route -> new RouteDTO(route.gatewayId(), route.destinationCidrBlock()))
                             .collect(Collectors.toList());
-
-                    // 퍼블릭 여부 확인 (igw가 있는 경우 퍼블릭으로 간주)
-                    boolean isPublicRouteTable = routeTable.routes().stream()
-                            .anyMatch(route -> route.gatewayId() != null && route.gatewayId().startsWith("igw-"));
-
-                    // 라우팅 테이블에 연결된 서브넷 필터링
-                    List<SubnetResponseDto> associatedPublicSubnets = new ArrayList<>();
-                    List<SubnetResponseDto> associatedPrivateSubnets = new ArrayList<>();
-
-                    for (SubnetResponseDto subnet : allSubnets) {
-                        if (subnet.getVpcId().equals(routeTable.vpcId())) {
-                            if (isPublicRouteTable) {
-                                associatedPublicSubnets.add(subnet);
-                            } else {
-                                associatedPrivateSubnets.add(subnet);
-                            }
-                        }
-                    }
-
-                    // 디버깅용 로그
-                    System.out.println("Route Table ID: " + routeTable.routeTableId());
-                    System.out.println("Public Subnets: " + associatedPublicSubnets);
-                    System.out.println("Private Subnets: " + associatedPrivateSubnets);
-
-                    return new RouteTableResponseDto(
-                            routeTable.routeTableId(),
-                            routeTable.vpcId(),
-                            routes,
-                            tagsMap,
-                            associatedPublicSubnets,
-                            associatedPrivateSubnets
-                    );
+                    return new RouteTableResponseDto(routeTable.routeTableId(), routeTable.vpcId(), routes, tagsMap);
                 })
                 .collect(Collectors.toList());
     }
-
 
     // VPCs 가져오기
     public List<VpcTotalResponseDto> fetchVpcs(String userId) {
