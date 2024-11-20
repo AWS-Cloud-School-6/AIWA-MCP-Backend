@@ -136,53 +136,40 @@ public class AwsResourceService {
         // Initialize the EC2 client
         initializeClient(userId, companyName);
 
-        // Create request
+        // Create and send the request
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
-        DescribeRouteTablesResponse response;
+        DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
 
-        try {
-            // Fetch response from EC2 client
-            response = ec2Client.describeRouteTables(request);
-        } catch (Exception e) {
-            // Log error and rethrow
-            System.err.println("Failed to fetch route tables: " + e.getMessage());
-            throw new RuntimeException("Unable to fetch route tables", e);
-        }
-
-        // Log the response for debugging
-        System.out.println("DescribeRouteTablesResponse: " + response);
-
+        // Process the route tables
         return response.routeTables().stream()
                 .map(routeTable -> {
-                    // Extract and map tags
-                    Map<String, String> tagsMap = (routeTable.tags() == null || routeTable.tags().isEmpty()) ?
+                    // Extract tags and map them
+                    Map<String, String> tagsMap = routeTable.tags() == null ?
                             Collections.emptyMap() :
                             routeTable.tags().stream()
                                     .collect(Collectors.toMap(Tag::key, Tag::value));
 
-                    // Extract and map routes
-                    List<RouteDTO> routes = (routeTable.routes() == null || routeTable.routes().isEmpty()) ?
+                    // Extract routes and map them
+                    List<RouteDTO> routes = routeTable.routes() == null ?
                             Collections.emptyList() :
                             routeTable.routes().stream()
-                                    .map(route -> {
-                                        String gatewayId = (route.gatewayId() == null) ? "N/A" : route.gatewayId();
-                                        String destinationCidrBlock = (route.destinationCidrBlock() == null) ? "N/A" : route.destinationCidrBlock();
-                                        return new RouteDTO(gatewayId, destinationCidrBlock);
-                                    })
+                                    .map(route -> new RouteDTO(
+                                            route.gatewayId() == null ? "N/A" : route.gatewayId(),
+                                            route.destinationCidrBlock() == null ? "N/A" : route.destinationCidrBlock()
+                                    ))
                                     .collect(Collectors.toList());
 
-                    // Build and return RouteTableResponseDto
-                    RouteTableResponseDto dto = new RouteTableResponseDto(
+                    // Create and return the DTO
+                    return new RouteTableResponseDto(
                             routeTable.routeTableId() == null ? "Unknown" : routeTable.routeTableId(),
                             routeTable.vpcId() == null ? "Unknown" : routeTable.vpcId(),
                             routes,
                             tagsMap
                     );
-                    System.out.println("Generated DTO: " + dto);
-                    return dto;
                 })
                 .collect(Collectors.toList());
     }
+
 
     // VPCs 가져오기
     public List<VpcTotalResponseDto> fetchVpcs(String userId, String companyName) {
