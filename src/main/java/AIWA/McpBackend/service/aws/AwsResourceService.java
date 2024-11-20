@@ -153,20 +153,17 @@ public class AwsResourceService {
         System.out.println("DescribeRouteTablesResponse: " + response);
 
         return response.routeTables().stream()
-                .peek(routeTable -> System.out.println("Processing RouteTable: " + routeTable))
                 .map(routeTable -> {
                     // Extract and map tags
-                    Map<String, String> tagsMap = (routeTable.tags() == null) ?
+                    Map<String, String> tagsMap = (routeTable.tags() == null || routeTable.tags().isEmpty()) ?
                             Collections.emptyMap() :
                             routeTable.tags().stream()
-                                    .peek(tag -> System.out.println("Processing Tag: " + tag))
                                     .collect(Collectors.toMap(Tag::key, Tag::value));
 
                     // Extract and map routes
-                    List<RouteDTO> routes = (routeTable.routes() == null) ?
+                    List<RouteDTO> routes = (routeTable.routes() == null || routeTable.routes().isEmpty()) ?
                             Collections.emptyList() :
                             routeTable.routes().stream()
-                                    .peek(route -> System.out.println("Processing Route: " + route))
                                     .map(route -> {
                                         String gatewayId = (route.gatewayId() == null) ? "N/A" : route.gatewayId();
                                         String destinationCidrBlock = (route.destinationCidrBlock() == null) ? "N/A" : route.destinationCidrBlock();
@@ -185,7 +182,6 @@ public class AwsResourceService {
                     return dto;
                 })
                 .collect(Collectors.toList());
-
     }
 
     // VPCs 가져오기
