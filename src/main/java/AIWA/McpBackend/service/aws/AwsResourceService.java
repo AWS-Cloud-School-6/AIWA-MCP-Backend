@@ -152,19 +152,21 @@ public class AwsResourceService {
         // Log the response for debugging
         System.out.println("DescribeRouteTablesResponse: " + response);
 
-        // Process the route tables
         return response.routeTables().stream()
+                .peek(routeTable -> System.out.println("Processing RouteTable: " + routeTable))
                 .map(routeTable -> {
                     // Extract and map tags
                     Map<String, String> tagsMap = (routeTable.tags() == null) ?
                             Collections.emptyMap() :
                             routeTable.tags().stream()
+                                    .peek(tag -> System.out.println("Processing Tag: " + tag))
                                     .collect(Collectors.toMap(Tag::key, Tag::value));
 
                     // Extract and map routes
                     List<RouteDTO> routes = (routeTable.routes() == null) ?
                             Collections.emptyList() :
                             routeTable.routes().stream()
+                                    .peek(route -> System.out.println("Processing Route: " + route))
                                     .map(route -> {
                                         String gatewayId = (route.gatewayId() == null) ? "N/A" : route.gatewayId();
                                         String destinationCidrBlock = (route.destinationCidrBlock() == null) ? "N/A" : route.destinationCidrBlock();
@@ -173,14 +175,17 @@ public class AwsResourceService {
                                     .collect(Collectors.toList());
 
                     // Build and return RouteTableResponseDto
-                    return new RouteTableResponseDto(
+                    RouteTableResponseDto dto = new RouteTableResponseDto(
                             routeTable.routeTableId() == null ? "Unknown" : routeTable.routeTableId(),
                             routeTable.vpcId() == null ? "Unknown" : routeTable.vpcId(),
                             routes,
                             tagsMap
                     );
+                    System.out.println("Generated DTO: " + dto);
+                    return dto;
                 })
                 .collect(Collectors.toList());
+
     }
 
     // VPCs 가져오기
