@@ -132,18 +132,53 @@ public class AwsResourceService {
     }
 
     // Route Tables 가져오기
-    public List<RouteTableResponseDto> fetchRouteTables(String userId,String companyName) {
-        initializeClient(userId,companyName);
+    public List<RouteTableResponseDto> fetchRouteTables(String userId, String companyName) {
+        // Initialize the EC2 client
+        initializeClient(userId, companyName);
+
+        // Create request
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
-        DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
+        DescribeRouteTablesResponse response;
+
+        try {
+            // Fetch response from EC2 client
+            response = ec2Client.describeRouteTables(request);
+        } catch (Exception e) {
+            // Log error and rethrow
+            System.err.println("Failed to fetch route tables: " + e.getMessage());
+            throw new RuntimeException("Unable to fetch route tables", e);
+        }
+
+        // Log the response for debugging
+        System.out.println("DescribeRouteTablesResponse: " + response);
+
+        // Process the route tables
         return response.routeTables().stream()
                 .map(routeTable -> {
-                    Map<String, String> tagsMap = routeTable.tags() == null ? Collections.emptyMap() :
-                            routeTable.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
-                    List<RouteDTO> routes = routeTable.routes().stream()
-                            .map(route -> new RouteDTO(route.gatewayId(), route.destinationCidrBlock()))
-                            .collect(Collectors.toList());
-                    return new RouteTableResponseDto(routeTable.routeTableId(), routeTable.vpcId(), routes, tagsMap);
+                    // Extract and map tags
+                    Map<String, String> tagsMap = (routeTable.tags() == null) ?
+                            Collections.emptyMap() :
+                            routeTable.tags().stream()
+                                    .collect(Collectors.toMap(Tag::key, Tag::value));
+
+                    // Extract and map routes
+                    List<RouteDTO> routes = (routeTable.routes() == null) ?
+                            Collections.emptyList() :
+                            routeTable.routes().stream()
+                                    .map(route -> {
+                                        String gatewayId = (route.gatewayId() == null) ? "N/A" : route.gatewayId();
+                                        String destinationCidrBlock = (route.destinationCidrBlock() == null) ? "N/A" : route.destinationCidrBlock();
+                                        return new RouteDTO(gatewayId, destinationCidrBlock);
+                                    })
+                                    .collect(Collectors.toList());
+
+                    // Build and return RouteTableResponseDto
+                    return new RouteTableResponseDto(
+                            routeTable.routeTableId() == null ? "Unknown" : routeTable.routeTableId(),
+                            routeTable.vpcId() == null ? "Unknown" : routeTable.vpcId(),
+                            routes,
+                            tagsMap
+                    );
                 })
                 .collect(Collectors.toList());
     }
