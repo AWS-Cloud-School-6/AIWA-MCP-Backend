@@ -131,25 +131,27 @@ public class AwsResourceService {
                 .collect(Collectors.toList());
     }
 
-    // Route Tables 가져오기
     public List<RouteTableResponseDto> fetchRouteTables(String userId, String companyName) {
-        // Initialize the EC2 client
         initializeClient(userId, companyName);
 
-        // Create and send the request
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
 
-        // Process the route tables
+        // 디버깅 출력
+        System.out.println("DescribeRouteTablesResponse: " + response);
+
         return response.routeTables().stream()
                 .map(routeTable -> {
-                    // Extract tags and map them
+                    // 디버깅용 출력
+                    System.out.println("Processing RouteTable: " + routeTable);
+
+                    // 태그 매핑
                     Map<String, String> tagsMap = routeTable.tags() == null ?
                             Collections.emptyMap() :
                             routeTable.tags().stream()
                                     .collect(Collectors.toMap(Tag::key, Tag::value));
 
-                    // Extract routes and map them
+                    // 라우트 매핑
                     List<RouteDTO> routes = routeTable.routes() == null ?
                             Collections.emptyList() :
                             routeTable.routes().stream()
@@ -159,7 +161,7 @@ public class AwsResourceService {
                                     ))
                                     .collect(Collectors.toList());
 
-                    // Create and return the DTO
+                    // DTO 생성
                     return new RouteTableResponseDto(
                             routeTable.routeTableId() == null ? "Unknown" : routeTable.routeTableId(),
                             routeTable.vpcId() == null ? "Unknown" : routeTable.vpcId(),
