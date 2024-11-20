@@ -131,46 +131,58 @@ public class AwsResourceService {
                 .collect(Collectors.toList());
     }
 
-    public List<RouteTableResponseDto> fetchRouteTables(String userId, String companyName) {
-        initializeClient(userId, companyName);
+    // Route Tables 가져오기
+    public List<RouteTableResponseDto> fetchRouteTables(String userId,String companyName) {
+        initializeClient(userId,companyName);
+
+        // 서브넷 정보를 먼저 가져옵니다.
+        // 모든 서브넷을 가져옵니다.
+        List<SubnetResponseDto> allSubnets = fetchSubnets(userId,companyName);
 
         DescribeRouteTablesRequest request = DescribeRouteTablesRequest.builder().build();
         DescribeRouteTablesResponse response = ec2Client.describeRouteTables(request);
 
-        // 디버깅 출력
-        System.out.println("DescribeRouteTablesResponse: " + response);
-
         return response.routeTables().stream()
                 .map(routeTable -> {
-                    // 디버깅용 출력
-                    System.out.println("Processing RouteTable: " + routeTable);
+                    Map<String, String> tagsMap = routeTable.tags() == null ? Collections.emptyMap() :
+                            routeTable.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
 
-                    // 태그 매핑
-                    Map<String, String> tagsMap = routeTable.tags() == null ?
-                            Collections.emptyMap() :
-                            routeTable.tags().stream()
-                                    .collect(Collectors.toMap(Tag::key, Tag::value));
+                    List<RouteDTO> routes = routeTable.routes().stream()
+                            .map(route -> new RouteDTO(route.gatewayId(), route.destinationCidrBlock()))
+                            .collect(Collectors.toList());
+                    // 퍼블릭 여부 확인 (igw가 있는 경우 퍼블릭으로 간주)
+                    boolean isPublicRouteTable = routeTable.routes().stream()
+                            .anyMatch(route -> route.gatewayId() != null && route.gatewayId().startsWith("igw-"));
+                    // 라우팅 테이블에 연결된 서브넷 필터링
+                    List<SubnetResponseDto> associatedPublicSubnets = new ArrayList<>();
+                    List<SubnetResponseDto> associatedPrivateSubnets = new ArrayList<>();
+                    for (SubnetResponseDto subnet : allSubnets) {
+                        if (subnet.getVpcId().equals(routeTable.vpcId())) {
+                            if (isPublicRouteTable) {
+                                associatedPublicSubnets.add(subnet);
+                            } else {
+                                associatedPrivateSubnets.add(subnet);
+                            }
+                        }
+                    }
+                    // 디버깅용 로그
+                    System.out.println("Route Table ID: " + routeTable.routeTableId());
+                    System.out.println("Public Subnets: " + associatedPublicSubnets);
+                    System.out.println("Private Subnets: " + associatedPrivateSubnets);
 
-                    // 라우트 매핑
-                    List<RouteDTO> routes = routeTable.routes() == null ?
-                            Collections.emptyList() :
-                            routeTable.routes().stream()
-                                    .map(route -> new RouteDTO(
-                                            route.gatewayId() == null ? "N/A" : route.gatewayId(),
-                                            route.destinationCidrBlock() == null ? "N/A" : route.destinationCidrBlock()
-                                    ))
-                                    .collect(Collectors.toList());
-
-                    // DTO 생성
                     return new RouteTableResponseDto(
-                            routeTable.routeTableId() == null ? "Unknown" : routeTable.routeTableId(),
-                            routeTable.vpcId() == null ? "Unknown" : routeTable.vpcId(),
+                            routeTable.routeTableId(),
+                            routeTable.vpcId(),
                             routes,
-                            tagsMap
+                            tagsMap,
+                            associatedPublicSubnets,
+                            associatedPrivateSubnets
                     );
                 })
                 .collect(Collectors.toList());
     }
+
+
 
 
     // VPCs 가져오기

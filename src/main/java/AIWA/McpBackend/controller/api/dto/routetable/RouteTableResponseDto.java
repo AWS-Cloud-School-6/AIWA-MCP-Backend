@@ -18,7 +18,6 @@ public class RouteTableResponseDto {
     public RouteTableResponseDto(String routeTableId, String vpcId, List<RouteDTO> routes, Map<String, String> tags,
                                  List<SubnetResponseDto> publicSubnets, List<SubnetResponseDto> privateSubnets) {
 
-
         this.routeTableId = routeTableId;
         this.vpcId = vpcId;
         this.routes = routes;
@@ -26,11 +25,6 @@ public class RouteTableResponseDto {
         this.publicSubnets = publicSubnets;
         this.privateSubnets = privateSubnets;
     }
-
-    public RouteTableResponseDto(String routeTableId, String vpcId, List<RouteDTO> routes, Map<String, String> tagsMap) {
-    }
-
-    // Getters and Setters
 
 }
 
