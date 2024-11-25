@@ -98,23 +98,40 @@ public class AwsResourceService {
 
 
     // EC2 Instances 가져오기
-    public List<Ec2InstanceDTO> fetchEc2Instances(String userId,String companyName) {
-        initializeClient(userId,companyName);
+    public List<Ec2InstanceDTO> fetchEc2Instances(String userId, String companyName) {
+        // 클라이언트 초기화
+        initializeClient(userId, companyName);
+
+        // EC2 인스턴스 요청 생성
         DescribeInstancesRequest request = DescribeInstancesRequest.builder().build();
         DescribeInstancesResponse response = ec2Client.describeInstances(request);
+
+        // EC2 인스턴스 정보를 저장할 리스트
         List<Ec2InstanceDTO> ec2Instances = new ArrayList<>();
 
+        // EC2 인스턴스 정보 추출 및 DTO 생성
         response.reservations().forEach(reservation -> {
             reservation.instances().forEach(instance -> {
-                String instanceState = instance.state().nameAsString();
+                String instanceState = instance.state().nameAsString(); // 인스턴스 상태
                 Map<String, String> tagsMap = instance.tags() == null ? Collections.emptyMap() :
-                        instance.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
-                ec2Instances.add(new Ec2InstanceDTO(instance.instanceId(), instanceState, tagsMap));
+                        instance.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value)); // 태그 맵
+                String publicIpAddress = instance.publicIpAddress() == null ? "N/A" : instance.publicIpAddress(); // 퍼블릭 IP
+                String privateIpAddress = instance.privateIpAddress() == null ? "N/A" : instance.privateIpAddress(); // 프라이빗 IP
+
+                // DTO 객체 추가
+                ec2Instances.add(new Ec2InstanceDTO(
+                        instance.instanceId(),
+                        instanceState,
+                        tagsMap,
+                        publicIpAddress,
+                        privateIpAddress
+                ));
             });
         });
 
         return ec2Instances;
     }
+
 
     // Subnets 가져오기
     public List<SubnetResponseDto> fetchSubnets(String userId,String companyName) {
