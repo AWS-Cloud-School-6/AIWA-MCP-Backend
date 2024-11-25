@@ -233,16 +233,23 @@ public class AwsResourceService {
 
 
     // Security Groups 가져오기
-    public List<SecurityGroupDTO> fetchSecurityGroups(String userId,String companyName) {
+    public List<SecurityGroupDTO> fetchSecurityGroups(String userId, String companyName) {
+        initializeClient(userId, companyName);
 
-        initializeClient(userId,companyName);
+        // EC2 클라이언트로 보낼 요청 생성
         DescribeSecurityGroupsRequest request = DescribeSecurityGroupsRequest.builder().build();
+
+        // EC2 클라이언트로부터 Security Group 정보 가져오기
         DescribeSecurityGroupsResponse response = ec2Client.describeSecurityGroups(request);
+
         return response.securityGroups().stream()
                 .map(group -> {
+                    // Security Group의 태그를 Map으로 변환
                     Map<String, String> tagsMap = group.tags() == null ? Collections.emptyMap() :
                             group.tags().stream().collect(Collectors.toMap(Tag::key, Tag::value));
-                    return new SecurityGroupDTO(group.groupId(), group.groupName(), tagsMap);
+
+                    // SecurityGroupDTO 객체를 반환 (vpcId도 포함)
+                    return new SecurityGroupDTO(group.groupId(), group.groupName(), tagsMap, group.vpcId());
                 })
                 .collect(Collectors.toList());
     }
