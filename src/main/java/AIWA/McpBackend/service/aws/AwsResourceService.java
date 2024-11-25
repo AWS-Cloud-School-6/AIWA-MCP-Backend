@@ -47,8 +47,8 @@ public class AwsResourceService {
 
         // AWS 자격 증명 생성
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
-                memberCredentialDto.getAccessKey(),
-                memberCredentialDto.getSecretKey()
+                memberCredentialDto.getAiwaKeys().get(0).getAccessKey(),
+                memberCredentialDto.getAiwaKeys().get(0).getSecretKey()
         );
 
         // EC2 클라이언트 생성
