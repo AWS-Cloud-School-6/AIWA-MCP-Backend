@@ -53,7 +53,7 @@ public class NatGatewayService {
         String natGatewayTfFileName = String.format("nat_gateway_%s.tf", natGatewayRequest.getNatGatewayName());
 
         // 3. S3에 새로운 NAT Gateway .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + natGatewayTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + natGatewayTfFileName;
         s3Service.uploadFileContent(s3Key, natGatewayTfContent);
 
         // 4. Terraform 실행 요청
@@ -72,7 +72,7 @@ public class NatGatewayService {
         String natGatewayTfFileName = String.format("nat_gateway_%s.tf", natGatewayName);
 
         // 2. S3에서 해당 NAT Gateway .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + natGatewayTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + natGatewayTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청
@@ -102,7 +102,7 @@ public class NatGatewayService {
         String routeTfFileName = String.format("route_%s_to_nat_gateway.tf", routeTableName);
 
         // 3. S3에 새로운 Route .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + routeTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + routeTfFileName;
         s3Service.uploadFileContent(s3Key, routeTfContent);
 
         // 4. Terraform 실행 요청

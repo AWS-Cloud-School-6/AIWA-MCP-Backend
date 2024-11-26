@@ -24,7 +24,7 @@ public class EipService {
         String eipTfFileName = String.format("eip_%s.tf", eipId);
 
         // 3. S3에 새로운 EIP .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + eipTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + eipTfFileName;
         s3Service.uploadFileContent(s3Key, eipTfContent);
 
         // 4. Terraform 실행 요청
@@ -36,7 +36,7 @@ public class EipService {
         String eipTfFileName = String.format("eip_%s.tf", eipId);
 
         // 2. S3에서 EIP .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + eipTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + eipTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청

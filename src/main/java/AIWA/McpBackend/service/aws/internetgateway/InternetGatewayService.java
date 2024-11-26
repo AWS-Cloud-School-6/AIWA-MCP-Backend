@@ -35,7 +35,7 @@ public class InternetGatewayService {
         String igwTfFileName = String.format("igw_%s.tf", igwRequest.getIgwName());
 
         // 3. S3에 새로운 Internet Gateway .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + igwTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + igwTfFileName;
         s3Service.uploadFileContent(s3Key, igwTfContent);
 
         // 4. Terraform 실행 요청
@@ -54,7 +54,7 @@ public class InternetGatewayService {
         String igwTfFileName = String.format("igw_%s.tf", igwName);
 
         // 2. S3에서 해당 Internet Gateway .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + igwTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + igwTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청

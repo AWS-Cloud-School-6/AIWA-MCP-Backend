@@ -44,7 +44,7 @@ public class SecurityGroupService {
         String sgTfFileName = String.format("security_group_%s.tf", securityGroupRequest.getSecurityGroupName());
 
         // 6. S3에 Security Group .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + sgTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + sgTfFileName;
         s3Service.uploadFileContent(s3Key, sgTfContent.toString());
 
         // 7. Terraform 실행 요청
@@ -88,7 +88,7 @@ public class SecurityGroupService {
         String sgTfFileName = String.format("security_group_%s.tf", securityGroupName);
 
         // 2. S3에서 해당 Security Group .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + sgTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + sgTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청

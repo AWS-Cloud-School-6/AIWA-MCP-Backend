@@ -53,7 +53,7 @@ public class CloudWatchService {
         String alarmTfFileName = String.format("cloudwatch_alarm_%s.tf", alarmRequest.getAlarmName());
 
         // 3. S3에 새로운 CloudWatch 알람 .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + alarmTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + alarmTfFileName;
         s3Service.uploadFileContent(s3Key, alarmTfContent);
 
         // 4. Terraform 실행 요청
@@ -72,7 +72,7 @@ public class CloudWatchService {
         String alarmTfFileName = String.format("cloudwatch_alarm_%s.tf", alarmName);
 
         // 2. S3에서 해당 CloudWatch 알람 .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + alarmTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + alarmTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청

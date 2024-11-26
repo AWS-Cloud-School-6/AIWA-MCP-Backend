@@ -46,7 +46,7 @@ public class Ec2Service {
         String ec2TfFileName = String.format("ec2_%s.tf", instanceRequest.getInstanceName());
 
         // 3. S3에 새로운 EC2 인스턴스 .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + ec2TfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + ec2TfFileName;
         s3Service.uploadFileContent(s3Key, ec2TfContent);
 
         // 4. Terraform 실행 요청
@@ -65,7 +65,7 @@ public class Ec2Service {
         String ec2TfFileName = String.format("ec2_%s.tf", instanceName);
 
         // 2. S3에서 해당 EC2 인스턴스 .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + ec2TfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + ec2TfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청

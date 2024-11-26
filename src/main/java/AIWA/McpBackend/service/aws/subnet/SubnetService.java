@@ -46,7 +46,7 @@ public class SubnetService {
         System.out.println(subnetTfContent);
 
         // 4. S3에 새로운 Subnet .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + subnetTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + subnetTfFileName;
         s3Service.uploadFileContent(s3Key, subnetTfContent);
 
         // 5. Terraform 실행 요청
@@ -65,7 +65,7 @@ public class SubnetService {
         String subnetTfFileName = String.format("subnet_%s.tf", subnetName);
 
         // 2. S3에서 해당 Subnet .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + subnetTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + subnetTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청

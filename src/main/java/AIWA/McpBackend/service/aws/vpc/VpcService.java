@@ -39,7 +39,7 @@ public class VpcService {
         System.out.println(vpcTfContent);
 
         // 4. S3에 새로운 VPC .tf 파일 업로드
-        String s3Key = "users/" + userId + "/" + vpcTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + vpcTfFileName;
         s3Service.uploadFileContent(s3Key, vpcTfContent);
 
         // 5. Terraform 실행 요청
@@ -58,7 +58,7 @@ public class VpcService {
         String vpcTfFileName = String.format("vpc_%s.tf", vpcName);
 
         // 2. S3에서 해당 VPC .tf 파일 삭제
-        String s3Key = "users/" + userId + "/" + vpcTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + vpcTfFileName;
         s3Service.deleteFile(s3Key);
 
         // 3. Terraform 실행 요청

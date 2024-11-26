@@ -29,7 +29,7 @@ public class TerraformService {
      * @throws Exception Terraform 실행 중 발생한 모든 예외
      */
     public void executeTerraform(String userId) throws Exception {
-        String userPrefix = "users/" + userId + "/";
+        String userPrefix = "users/" + userId + "/AWS/";
         List<String> fileKeys = s3Service.listAllFiles(userId);
         if (fileKeys.isEmpty()) {
             throw new Exception("S3에 Terraform 관련 파일이 없습니다: " + userPrefix);

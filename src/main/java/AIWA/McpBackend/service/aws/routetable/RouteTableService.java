@@ -27,7 +27,7 @@ public class RouteTableService {
 
         String routeTableTfFileName = String.format("route-table_%s.tf", routeTableName);
 
-        String s3Key = "users/" + userId + "/" + routeTableTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + routeTableTfFileName;
         s3Service.uploadFileContent(s3Key, routeTableTfContent);
 
         terraformService.executeTerraform(userId);
@@ -90,7 +90,7 @@ public class RouteTableService {
         String routeTfFileName = String.format("route_%s_%s.tf", routeTableName, gatewayType);
 
         // S3에 업로드
-        String s3Key = "users/" + userId + "/" + routeTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + routeTfFileName;
         s3Service.uploadFileContent(s3Key, routeResourceContent);
 
         // Terraform 실행
@@ -110,7 +110,7 @@ public class RouteTableService {
 
         String associateTfFileName = String.format("route_table_assoc_%s.tf", routeTableName);
 
-        String s3Key = "users/" + userId + "/" + associateTfFileName;
+        String s3Key = "users/" + userId + "/AWS/" + associateTfFileName;
         s3Service.uploadFileContent(s3Key, associateTfContent);
 
         terraformService.executeTerraform(userId);
