@@ -50,6 +50,8 @@ public class AwsResourceService {
                 memberCredentialDto.getAiwaKeys().get(0).getAccessKey(),
                 memberCredentialDto.getAiwaKeys().get(0).getSecretKey()
         );
+        System.out.println(memberCredentialDto.getAiwaKeys().get(0).getAccessKey());
+        System.out.println(memberCredentialDto.getAiwaKeys().get(0).getSecretKey());
 
         // EC2 클라이언트 생성
         this.ec2Client = Ec2Client.builder()
